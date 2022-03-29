@@ -1,0 +1,259 @@
+{
+  "api": {
+    "name": "BraintreePlugin",
+    "slug": "braintreeplugin",
+    "docs": "",
+    "tags": [],
+    "methods": [
+      {
+        "name": "setToken",
+        "signature": "(options: DropInToken) => any",
+        "parameters": [
+          {
+            "name": "options",
+            "docs": "",
+            "type": "DropInToken"
+          }
+        ],
+        "returns": "any",
+        "tags": [],
+        "docs": "",
+        "complexTypes": [
+          "DropInToken"
+        ],
+        "slug": "settoken"
+      },
+      {
+        "name": "showDropIn",
+        "signature": "(options: DropInOptions) => any",
+        "parameters": [
+          {
+            "name": "options",
+            "docs": "",
+            "type": "DropInOptions"
+          }
+        ],
+        "returns": "any",
+        "tags": [],
+        "docs": "",
+        "complexTypes": [
+          "DropInOptions",
+          "DropInResult"
+        ],
+        "slug": "showdropin"
+      },
+      {
+        "name": "getDeviceData",
+        "signature": "(options: DataCollectorOptions) => any",
+        "parameters": [
+          {
+            "name": "options",
+            "docs": "",
+            "type": "DataCollectorOptions"
+          }
+        ],
+        "returns": "any",
+        "tags": [],
+        "docs": "",
+        "complexTypes": [
+          "DataCollectorOptions"
+        ],
+        "slug": "getdevicedata"
+      }
+    ],
+    "properties": []
+  },
+  "interfaces": [
+    {
+      "name": "DropInToken",
+      "slug": "dropintoken",
+      "docs": "",
+      "tags": [],
+      "methods": [],
+      "properties": [
+        {
+          "name": "token",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "DropInOptions",
+      "slug": "dropinoptions",
+      "docs": "",
+      "tags": [],
+      "methods": [],
+      "properties": [
+        {
+          "name": "amount",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string"
+        },
+        {
+          "name": "disabled",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "{} | undefined"
+        },
+        {
+          "name": "givenName",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string | undefined"
+        },
+        {
+          "name": "surname",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string | undefined"
+        },
+        {
+          "name": "email",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string | undefined"
+        },
+        {
+          "name": "phoneNumber",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string | undefined"
+        },
+        {
+          "name": "streetAddress",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string | undefined"
+        },
+        {
+          "name": "postalCode",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string | undefined"
+        },
+        {
+          "name": "locality",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string | undefined"
+        },
+        {
+          "name": "countryCodeAlpha2",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string | undefined"
+        }
+      ]
+    },
+    {
+      "name": "DropInResult",
+      "slug": "dropinresult",
+      "docs": "",
+      "tags": [],
+      "methods": [],
+      "properties": [
+        {
+          "name": "cancelled",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "boolean"
+        },
+        {
+          "name": "nonce",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string"
+        },
+        {
+          "name": "type",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string"
+        },
+        {
+          "name": "localizedDescription",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string"
+        },
+        {
+          "name": "deviceData",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string"
+        },
+        {
+          "name": "card",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "{ lastTwo: string; network: string; }"
+        },
+        {
+          "name": "payPalAccount",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "{ email: string; firstName: string; lastName: string; phone: string; billingAddress: string; shippingAddress: string; clientMetadataId: string; payerId: string; }"
+        },
+        {
+          "name": "applePaycard",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "any"
+        },
+        {
+          "name": "threeDSecureCard",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "{ liabilityShifted: boolean; liabilityShiftPossible: boolean; }"
+        },
+        {
+          "name": "venmoAccount",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "{ username: string; }"
+        }
+      ]
+    },
+    {
+      "name": "DataCollectorOptions",
+      "slug": "datacollectoroptions",
+      "docs": "",
+      "tags": [],
+      "methods": [],
+      "properties": [
+        {
+          "name": "merchantId",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string"
+        }
+      ]
+    }
+  ],
+  "enums": []
+}
