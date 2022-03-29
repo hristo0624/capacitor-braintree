@@ -1,6 +1,6 @@
 {
-  "name": "capacitor-braintree",
-  "version": "1.0.1",
+  "name": "capacitor-braintree-sh",
+  "version": "1.0.0",
   "description": "Capacitor v3+ Braintree Native SDK plugin for 3D Secure-enabled payments",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",
@@ -79,5 +79,6 @@
     "android": {
       "src": "android"
     }
-  }
+  },
+  "dependencies": {}
 }
