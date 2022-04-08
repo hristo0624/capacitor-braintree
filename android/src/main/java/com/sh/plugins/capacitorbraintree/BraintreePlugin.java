@@ -13,6 +13,7 @@ import com.braintreepayments.api.exceptions.InvalidArgumentException;
 import com.braintreepayments.api.interfaces.BraintreeResponseListener;
 import com.braintreepayments.api.models.CardNonce;
 import com.braintreepayments.api.models.PayPalAccountNonce;
+import com.braintreepayments.api.models.GooglePaymentRequest;
 import com.braintreepayments.api.models.ThreeDSecureInfo;
 import com.braintreepayments.api.models.ThreeDSecurePostalAddress;
 import com.braintreepayments.api.models.ThreeDSecureRequest;
@@ -26,6 +27,8 @@ import com.getcapacitor.PluginMethod;
 import com.getcapacitor.BridgeFragment;
 import com.getcapacitor.annotation.ActivityCallback;
 import com.getcapacitor.annotation.CapacitorPlugin;
+import com.google.android.gms.wallet.TransactionInfo;
+import com.google.android.gms.wallet.WalletConstants;
 
 import com.braintreepayments.api.dropin.DropInActivity;
 import com.braintreepayments.api.dropin.DropInRequest;
@@ -120,6 +123,14 @@ public class BraintreePlugin extends Plugin {
             .requestThreeDSecureVerification(true)
             .collectDeviceData(true)
             .threeDSecureRequest(threeDSecureRequest);
+        GooglePaymentRequest googlePaymentRequest = new GooglePaymentRequest()
+                .transactionInfo(TransactionInfo.newBuilder()
+                        .setTotalPrice(call.getString("amount"))
+                        .setTotalPriceStatus(WalletConstants.TOTAL_PRICE_STATUS_FINAL)
+                        .setCurrencyCode("USD")
+                        .build())
+                .billingAddressRequired(true)
+                .googleMerchantId(call.getString("googleMerchantId"));
         Intent intent = dropInRequest.getIntent(getContext());
 
         Log.d(PLUGIN_TAG, "showDropIn started");

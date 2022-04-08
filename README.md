@@ -49,10 +49,10 @@ if url.scheme?.localizedCaseInsensitiveCompare("com.your-company.your-app.paymen
         google()
         jcenter()
         maven {
-            url "https://cardinalcommerce.bintray.com/android"
+            url "https://cardinalcommerceprod.jfrog.io/artifactory/android"
             credentials {
-                username 'braintree-team-sdk@cardinalcommerce'
-                password '220cc9476025679c4e5c843666c27d97cfb0f951'
+                username 'braintree_team_sdk'
+                password 'AKCp8jQcoDy2hxSWhDAUQKXLDPDx6NYRkqrgFLRc3qDrayg6rrCbJpsKKyMwaykVL8FWusJpp'
             }
         }
     }
@@ -73,7 +73,7 @@ try {
 
   payment = await Braintree.showDropIn({
     amount: '0.00',
-    disabled: ['venmo', 'applePay', 'googlePay'],
+    disabled: ['venmo', 'paypal'],
     givenName: customerDetails.firstName,
     surname: customerDetails.lastName,
     email: customerDetails.email,
@@ -82,6 +82,9 @@ try {
     postalCode: customerDetails.zipcode,
     locality: customerDetails.city,
     countryCodeAlpha2: customerDetails.CountryAlphaCode,
+    appleMerchantId: customerDetails.appleMerchantId,
+    googleMerchantId: customerDetails.googleMerchantId,
+    appleMerchantName: customerDetails.appleMerchantName,
   });
 } catch(e) {
   console.error(e);
@@ -185,6 +188,9 @@ getDeviceData(options: DataCollectorOptions) => any
 | **`postalCode`**        | <code>string</code> |
 | **`locality`**          | <code>string</code> |
 | **`countryCodeAlpha2`** | <code>string</code> |
+| **`appleMerchantId`**   | <code>string</code> |
+| **`googleMerchantId`**  | <code>string</code> |
+| **`appleMerchantName`** | <code>string</code> |
 
 
 #### DropInResult

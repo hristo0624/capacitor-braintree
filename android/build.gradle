@@ -46,10 +46,10 @@ repositories {
     jcenter()
     mavenCentral()
     maven {
-        url "https://cardinalcommerce.bintray.com/android"
+        url "https://cardinalcommerceprod.jfrog.io/artifactory/android"
         credentials {
-            username 'braintree-team-sdk@cardinalcommerce'
-            password '220cc9476025679c4e5c843666c27d97cfb0f951'
+            username 'braintree_team_sdk'
+            password 'AKCp8jQcoDy2hxSWhDAUQKXLDPDx6NYRkqrgFLRc3qDrayg6rrCbJpsKKyMwaykVL8FWusJpp'
         }
     }
 }
@@ -60,6 +60,7 @@ dependencies {
     implementation project(':capacitor-android')
     implementation "androidx.appcompat:appcompat:$androidxAppCompatVersion"
     implementation 'com.braintreepayments.api:braintree:3.17.2'
+    implementation 'com.google.android.gms:play-services-wallet:16.0.1'
     implementation 'com.braintreepayments.api:three-d-secure:3.17.2'
     implementation 'com.braintreepayments:card-form:5.1.1'
     implementation ('com.braintreepayments.api:drop-in:5.2.1') {

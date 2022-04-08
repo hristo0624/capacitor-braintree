@@ -12,6 +12,9 @@ export interface DropInOptions {
     postalCode: string | undefined;
     locality: string | undefined;
     countryCodeAlpha2: string | undefined;
+    appleMerchantId?: string;
+    googleMerchantId?: string;
+    appleMerchantName?: string;
 }
 export interface DataCollectorOptions {
     merchantId: string;

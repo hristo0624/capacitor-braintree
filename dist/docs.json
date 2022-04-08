@@ -156,6 +156,27 @@
           "docs": "",
           "complexTypes": [],
           "type": "string | undefined"
+        },
+        {
+          "name": "appleMerchantId",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string | undefined"
+        },
+        {
+          "name": "googleMerchantId",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string | undefined"
+        },
+        {
+          "name": "appleMerchantName",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string | undefined"
         }
       ]
     },
