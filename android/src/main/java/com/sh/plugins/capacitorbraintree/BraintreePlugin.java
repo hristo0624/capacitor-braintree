@@ -14,6 +14,7 @@ import com.braintreepayments.api.interfaces.BraintreeResponseListener;
 import com.braintreepayments.api.models.CardNonce;
 import com.braintreepayments.api.models.PayPalAccountNonce;
 import com.braintreepayments.api.models.GooglePaymentRequest;
+import com.braintreepayments.api.models.GooglePaymentCardNonce;
 import com.braintreepayments.api.models.ThreeDSecureInfo;
 import com.braintreepayments.api.models.ThreeDSecurePostalAddress;
 import com.braintreepayments.api.models.ThreeDSecureRequest;
@@ -189,7 +190,7 @@ public class BraintreePlugin extends Plugin {
         Log.d(PLUGIN_TAG, "handleNonce");
 
         JSObject resultMap = new JSObject();
-
+        resultMap.put("cancelled", false);
         resultMap.put("nonce", paymentMethodNonce.getNonce());
         resultMap.put("type", paymentMethodNonce.getTypeLabel());
         resultMap.put("localizedDescription", paymentMethodNonce.getDescription());
@@ -246,6 +247,13 @@ public class BraintreePlugin extends Plugin {
             innerMap.put("username", venmoAccountNonce.getUsername());
 
             resultMap.put("venmoAccount", innerMap);
+        }
+
+        if (paymentMethodNonce instanceof GooglePaymentCardNonce) {
+            GooglePaymentCardNonce googlePayCardNonce = (GooglePaymentCardNonce) paymentMethodNonce;
+
+            JSObject innerMap = new JSObject();
+            innerMap.put("lastTwo", googlePayCardNonce.getLastTwo());
         }
 
         return resultMap;

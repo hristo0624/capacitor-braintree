@@ -9,6 +9,9 @@ public class BraintreePlugin: CAPPlugin {
     var dataCollector: BTDataCollector!
     var braintreeClient: BTAPIClient!
     var applePayController: PKPaymentAuthorizationViewController!
+    var merchantName: String!
+    var payAmount: NSDecimalNumber!
+    var showCallID: String?
 
     /**
      * Get device date
@@ -71,10 +74,20 @@ public class BraintreePlugin: CAPPlugin {
             call.reject("An amount is required.")
             return;
         }
-
+        
+        guard let mName = call.getString("appleMerchantName") else {
+            call.reject("Apple Pay Merchant Name is required.")
+            return;
+        }
+        
+        showCallID = call.callbackId;
+        bridge?.saveCall(call);
+        payAmount = NSDecimalNumber(string: amount)
+        merchantName = mName
         /**
          * DropIn UI Request
          */
+        
         let threeDSecureRequest = BTThreeDSecureRequest()
         threeDSecureRequest.versionRequested = .version2
         threeDSecureRequest.amount = NSDecimalNumber(string: amount)
@@ -118,7 +131,7 @@ public class BraintreePlugin: CAPPlugin {
          * Initialize DropIn UI
          */
         let dropIn = BTDropInController(authorization: self.token, request: dropInRequest)
-        { (controller, result, error) in
+        { [self] (controller, result, error) in
             if (error != nil) {
                 call.reject("Something went wrong.")
             } else if (result?.isCancelled == true) {
@@ -126,7 +139,7 @@ public class BraintreePlugin: CAPPlugin {
             } else if let result = result {
                 if (result.paymentMethod === nil && result.paymentOptionType == BTUIKPaymentOptionType.applePay) {
                     let paymentRequest = PKPaymentRequest()
-                    paymentRequest.paymentSummaryItems = [PKPaymentSummaryItem(label: call.getString("appleMerchantName") ?? "", amount: NSDecimalNumber(string: amount))]
+                    paymentRequest.paymentSummaryItems = [PKPaymentSummaryItem(label: self.merchantName, amount: payAmount)]
                     paymentRequest.supportedNetworks = [.visa, .masterCard, .amex, .discover]
                     paymentRequest.merchantCapabilities = .capability3DS
                     paymentRequest.currencyCode = call.getString("currencyCode") ?? "GBP"
@@ -158,7 +171,6 @@ public class BraintreePlugin: CAPPlugin {
         var payPalAccountNonce: BTPayPalAccountNonce
         var cardNonce: BTCardNonce
         var venmoAccountNonce: BTVenmoAccountNonce
-        var appleAccountNonce: BTApplePayCardNonce
 
         var response: [String: Any] = ["cancelled": false]
         response["nonce"] = paymentMethodNonce.nonce
@@ -186,6 +198,11 @@ public class BraintreePlugin: CAPPlugin {
          */
         if(paymentMethodNonce is BTCardNonce){
             cardNonce = paymentMethodNonce as! BTCardNonce
+            if cardNonce.threeDSecureInfo.wasVerified == false {
+               print("ThreeD Secure was not verified")
+            } else {
+                print("ThreeD Secure was verified")
+            }
             response["deviceData"] = PPDataCollector.collectPayPalDeviceData()
             response["card"] = [
                 "lastTwo": cardNonce.lastTwo!,
@@ -202,11 +219,37 @@ public class BraintreePlugin: CAPPlugin {
                 "username": venmoAccountNonce.username
             ]
         }
+        
+        if(paymentMethodNonce is BTApplePayCardNonce){
+            
+        }
 
         return response;
 
     }
+    
+    func resolveApplePayFail(message: String?) {
+        if let callID = self.showCallID, let call = self.bridge?.savedCall(withID: callID) {
+            var response: [String: Any] = ["cancelled": true]
+            response["reason"] = message
+            call.resolve(response);
+            self.bridge?.releaseCall(call)
+        }
+    }
+    
+    func resolveApplePaySuccess(paymentMethodNonce: BTPaymentMethodNonce) {
+        var response: [String: Any] = ["cancelled": false]
+        response["nonce"] = paymentMethodNonce.nonce
+        response["type"] = paymentMethodNonce.type
+        response["localizedDescription"] = paymentMethodNonce.localizedDescription
+        if let callID = self.showCallID, let call = self.bridge?.savedCall(withID: callID) {
+            call.resolve(response);
+            self.bridge?.releaseCall(call)
+        }
+    }
 }
+
+
 
 // MARK: - PKPaymentAuthorizationControllerDelegate
 
@@ -214,7 +257,7 @@ extension BraintreePlugin: PKPaymentAuthorizationViewControllerDelegate {
     public func paymentAuthorizationViewController(_ controller: PKPaymentAuthorizationViewController,
                                             didSelect shippingMethod: PKShippingMethod,
                                             completion: @escaping (PKPaymentAuthorizationStatus, [PKPaymentSummaryItem]) -> Void) {
-        let testItem = PKPaymentSummaryItem(label: "SOME ITEM", amount: 10.00)
+        let testItem = PKPaymentSummaryItem(label: merchantName, amount: payAmount)
         if shippingMethod.identifier == "fast" {
             completion(.success, [testItem,
                                   PKPaymentSummaryItem(label: "SHIPPING", amount: shippingMethod.amount),
@@ -230,18 +273,20 @@ extension BraintreePlugin: PKPaymentAuthorizationViewControllerDelegate {
     public func paymentAuthorizationViewController(_ controller: PKPaymentAuthorizationViewController,
                                             didAuthorizePayment payment: PKPayment,
                                             handler completion: @escaping (PKPaymentAuthorizationResult) -> Void) {
-        print("Apple Pay Did Authorize Payment1")
+        print("Apple Pay Did Authorize Payment1" + token)
         guard let apiClient = BTAPIClient(authorization: token) else { return }
         let applePayClient = BTApplePayClient(apiClient: apiClient)
         
         applePayClient.tokenizeApplePay(payment) { (tokenizedPaymentMethod, error) in
             guard let paymentMethod = tokenizedPaymentMethod, error == nil else {
                 print(error!.localizedDescription)
+                self.resolveApplePayFail(message: error?.localizedDescription);
                 completion(PKPaymentAuthorizationResult(status: .failure, errors: nil))
                 return
             }
             
 //            self.completionBlock?(paymentMethod)
+            self.resolveApplePaySuccess(paymentMethodNonce: paymentMethod)
             completion(PKPaymentAuthorizationResult(status: .success, errors: nil))
         }
     }
@@ -256,11 +301,13 @@ extension BraintreePlugin: PKPaymentAuthorizationViewControllerDelegate {
         applePayClient.tokenizeApplePay(payment) { (tokenizedPaymentMethod, error) in
             guard let paymentMethod = tokenizedPaymentMethod, error == nil else {
                 print(error!.localizedDescription)
+                self.resolveApplePayFail(message: error?.localizedDescription);
                 completion(.failure)
                 return
             }
             
 //            self.completionBlock?(paymentMethod)
+            self.resolveApplePaySuccess(paymentMethodNonce: paymentMethod)
             completion(.success)
         }
     }
