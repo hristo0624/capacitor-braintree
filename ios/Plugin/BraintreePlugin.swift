@@ -7,6 +7,8 @@ import BraintreeDropIn
 public class BraintreePlugin: CAPPlugin {
     var token: String!
     var dataCollector: BTDataCollector!
+    var braintreeClient: BTAPIClient!
+    var applePayController: PKPaymentAuthorizationViewController!
 
     /**
      * Get device date
@@ -122,7 +124,28 @@ public class BraintreePlugin: CAPPlugin {
             } else if (result?.isCancelled == true) {
                 call.resolve(["cancelled": true])
             } else if let result = result {
-                call.resolve(self.getPaymentMethodNonce(paymentMethodNonce: result.paymentMethod!))
+                if (result.paymentMethod === nil && result.paymentOptionType == BTUIKPaymentOptionType.applePay) {
+                    let paymentRequest = PKPaymentRequest()
+                    paymentRequest.paymentSummaryItems = [PKPaymentSummaryItem(label: call.getString("appleMerchantName") ?? "", amount: NSDecimalNumber(string: amount))]
+                    paymentRequest.supportedNetworks = [.visa, .masterCard, .amex, .discover]
+                    paymentRequest.merchantCapabilities = .capability3DS
+                    paymentRequest.currencyCode = call.getString("currencyCode") ?? "GBP"
+                    paymentRequest.countryCode = call.getString("countryCodeAlpha2") ?? "GB"
+                    paymentRequest.merchantIdentifier = call.getString("appleMerchantId") ?? ""
+                    
+                    guard let applePayController = PKPaymentAuthorizationViewController(paymentRequest: paymentRequest) else {
+                        print("Unable to initialize PKPaymentAuthorizationViewController for Apple Pay")
+                        return
+                    }
+                    applePayController.delegate = self
+                    
+                    print("Presenting Apple Pay Sheet")
+                    DispatchQueue.main.async { [weak self] in
+                        self?.bridge?.viewController?.present(applePayController, animated: true)
+                    }
+                } else {
+                    call.resolve(self.getPaymentMethodNonce(paymentMethodNonce: result.paymentMethod!))
+                }
             }
             controller.dismiss(animated: true, completion: nil)
         }
@@ -135,6 +158,7 @@ public class BraintreePlugin: CAPPlugin {
         var payPalAccountNonce: BTPayPalAccountNonce
         var cardNonce: BTCardNonce
         var venmoAccountNonce: BTVenmoAccountNonce
+        var appleAccountNonce: BTApplePayCardNonce
 
         var response: [String: Any] = ["cancelled": false]
         response["nonce"] = paymentMethodNonce.nonce
@@ -181,5 +205,73 @@ public class BraintreePlugin: CAPPlugin {
 
         return response;
 
+    }
+}
+
+// MARK: - PKPaymentAuthorizationControllerDelegate
+
+extension BraintreePlugin: PKPaymentAuthorizationViewControllerDelegate {
+    public func paymentAuthorizationViewController(_ controller: PKPaymentAuthorizationViewController,
+                                            didSelect shippingMethod: PKShippingMethod,
+                                            completion: @escaping (PKPaymentAuthorizationStatus, [PKPaymentSummaryItem]) -> Void) {
+        let testItem = PKPaymentSummaryItem(label: "SOME ITEM", amount: 10.00)
+        if shippingMethod.identifier == "fast" {
+            completion(.success, [testItem,
+                                  PKPaymentSummaryItem(label: "SHIPPING", amount: shippingMethod.amount),
+                                  PKPaymentSummaryItem(label: "BRAINTREE", amount: testItem.amount.adding(shippingMethod.amount))])
+        } else if shippingMethod.identifier == "fail" {
+            completion(.failure, [testItem])
+        } else {
+            completion(.success, [testItem])
+        }
+    }
+    
+    @available(iOS 11.0, *)
+    public func paymentAuthorizationViewController(_ controller: PKPaymentAuthorizationViewController,
+                                            didAuthorizePayment payment: PKPayment,
+                                            handler completion: @escaping (PKPaymentAuthorizationResult) -> Void) {
+        print("Apple Pay Did Authorize Payment1")
+        guard let apiClient = BTAPIClient(authorization: token) else { return }
+        let applePayClient = BTApplePayClient(apiClient: apiClient)
+        
+        applePayClient.tokenizeApplePay(payment) { (tokenizedPaymentMethod, error) in
+            guard let paymentMethod = tokenizedPaymentMethod, error == nil else {
+                print(error!.localizedDescription)
+                completion(PKPaymentAuthorizationResult(status: .failure, errors: nil))
+                return
+            }
+            
+//            self.completionBlock?(paymentMethod)
+            completion(PKPaymentAuthorizationResult(status: .success, errors: nil))
+        }
+    }
+    
+    public func paymentAuthorizationViewController(_ controller: PKPaymentAuthorizationViewController,
+                                            didAuthorizePayment payment: PKPayment,
+                                            completion: @escaping (PKPaymentAuthorizationStatus) -> Void) {
+        print("Apple Pay Did Authorize Payment2")
+        guard let apiClient = BTAPIClient(authorization: token) else { return }
+        let applePayClient = BTApplePayClient(apiClient: apiClient)
+        
+        applePayClient.tokenizeApplePay(payment) { (tokenizedPaymentMethod, error) in
+            guard let paymentMethod = tokenizedPaymentMethod, error == nil else {
+                print(error!.localizedDescription)
+                completion(.failure)
+                return
+            }
+            
+//            self.completionBlock?(paymentMethod)
+            completion(.success)
+        }
+    }
+    
+    public func paymentAuthorizationViewControllerDidFinish(_ controller: PKPaymentAuthorizationViewController) {
+        DispatchQueue.main.async { [weak self] in
+            controller.dismiss(animated: true, completion: nil)
+        }
+    }
+    
+    public func paymentAuthorizationViewControllerWillAuthorizePayment(_ controller: PKPaymentAuthorizationViewController) {
+        print("Apple Pay will Authorize Payment")
     }
 }

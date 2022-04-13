@@ -191,6 +191,7 @@ getDeviceData(options: DataCollectorOptions) => any
 | **`appleMerchantId`**   | <code>string</code> |
 | **`googleMerchantId`**  | <code>string</code> |
 | **`appleMerchantName`** | <code>string</code> |
+| **`currencyCode`**      | <code>string</code> |
 
 
 #### DropInResult

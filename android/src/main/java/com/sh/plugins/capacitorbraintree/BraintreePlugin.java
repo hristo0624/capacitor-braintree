@@ -127,7 +127,7 @@ public class BraintreePlugin extends Plugin {
                 .transactionInfo(TransactionInfo.newBuilder()
                         .setTotalPrice(call.getString("amount"))
                         .setTotalPriceStatus(WalletConstants.TOTAL_PRICE_STATUS_FINAL)
-                        .setCurrencyCode("USD")
+                        .setCurrencyCode(call.getString("currencyCode"))
                         .build())
                 .billingAddressRequired(true)
                 .googleMerchantId(call.getString("googleMerchantId"));

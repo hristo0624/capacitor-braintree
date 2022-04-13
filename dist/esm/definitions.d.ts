@@ -15,6 +15,7 @@ export interface DropInOptions {
     appleMerchantId?: string;
     googleMerchantId?: string;
     appleMerchantName?: string;
+    currencyCode?: string;
 }
 export interface DataCollectorOptions {
     merchantId: string;
