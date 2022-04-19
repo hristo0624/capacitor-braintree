@@ -21,6 +21,7 @@ import com.braintreepayments.api.models.ThreeDSecureRequest;
 import com.braintreepayments.api.models.ThreeDSecureAdditionalInformation;
 import com.braintreepayments.api.models.VenmoAccountNonce;
 import com.braintreepayments.cardform.view.CardForm;
+import com.getcapacitor.JSArray;
 import com.getcapacitor.JSObject;
 import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
@@ -101,7 +102,7 @@ public class BraintreePlugin extends Plugin {
     }
 
     @PluginMethod()
-    public void showDropIn(PluginCall call) {
+    public void showDropIn(PluginCall call) throws JSONException {
         ThreeDSecurePostalAddress address = new ThreeDSecurePostalAddress()
             .givenName(call.getString("givenName")) // ASCII-printable characters required, else will throw a validation error
             .surname(call.getString("surname")) // ASCII-printable characters required, else will throw a validation error
@@ -124,6 +125,15 @@ public class BraintreePlugin extends Plugin {
             .requestThreeDSecureVerification(true)
             .collectDeviceData(true)
             .threeDSecureRequest(threeDSecureRequest);
+        if (call.hasOption("disabled")) {
+            JSArray disables = call.getArray("disabled");
+            if (disables.get(0) == "google") {
+                dropInRequest.disableGooglePayment();
+            }
+            if (disables.get(0) == "card") {
+                dropInRequest.disableCard();
+            }
+        }
         GooglePaymentRequest googlePaymentRequest = new GooglePaymentRequest()
                 .transactionInfo(TransactionInfo.newBuilder()
                         .setTotalPrice(call.getString("amount"))
