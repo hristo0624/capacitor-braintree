@@ -127,7 +127,7 @@ public class BraintreePlugin extends Plugin {
             .threeDSecureRequest(threeDSecureRequest);
         if (call.hasOption("disabled")) {
             JSArray disables = call.getArray("disabled");
-            if (disables.get(0) == "google") {
+            if (disables.get(0) == "googlePay") {
                 dropInRequest.disableGooglePayment();
             }
             if (disables.get(0) == "card") {
