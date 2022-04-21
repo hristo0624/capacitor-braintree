@@ -203,11 +203,34 @@ getDeviceData(options: DataCollectorOptions) => any
 | **`type`**                 | <code>string</code>                                                                                                                                                             |
 | **`localizedDescription`** | <code>string</code>                                                                                                                                                             |
 | **`deviceData`**           | <code>string</code>                                                                                                                                                             |
-| **`card`**                 | <code>{ lastTwo: string; network: string; cardHolderName: string; }</code>                                                                                                      |
+| **`card`**                 | <code>{ lastTwo: string; network: string; cardHolderName: string; threeDSecureCard: <a href="#threedsecurecard">ThreeDSecureCard</a>; }</code>                                  |
 | **`payPalAccount`**        | <code>{ email: string; firstName: string; lastName: string; phone: string; billingAddress: string; shippingAddress: string; clientMetadataId: string; payerId: string; }</code> |
-| **`applePaycard`**         | <code>any</code>                                                                                                                                                                |
+| **`applePay`**             | <code>any</code>                                                                                                                                                                |
+| **`googlePay`**            | <code>{ email: string; billingAddress: <a href="#postaladdress">PostalAddress</a>; shippingAddress: <a href="#postaladdress">PostalAddress</a>; }</code>                        |
 | **`threeDSecureCard`**     | <code>{ liabilityShifted: boolean; liabilityShiftPossible: boolean; }</code>                                                                                                    |
 | **`venmoAccount`**         | <code>{ username: string; }</code>                                                                                                                                              |
+
+
+#### ThreeDSecureCard
+
+| Prop                         | Type                 |
+| ---------------------------- | -------------------- |
+| **`threeDSecureVerified`**   | <code>boolean</code> |
+| **`liabilityShifted`**       | <code>boolean</code> |
+| **`liabilityShiftPossible`** | <code>boolean</code> |
+
+
+#### PostalAddress
+
+| Prop                     | Type                |
+| ------------------------ | ------------------- |
+| **`name`**               | <code>string</code> |
+| **`address1`**           | <code>string</code> |
+| **`address2`**           | <code>string</code> |
+| **`locality`**           | <code>string</code> |
+| **`administrativeArea`** | <code>string</code> |
+| **`postalCode`**         | <code>string</code> |
+| **`countryCode`**        | <code>string</code> |
 
 
 #### DataCollectorOptions

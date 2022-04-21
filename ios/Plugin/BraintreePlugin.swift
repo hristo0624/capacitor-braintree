@@ -208,6 +208,11 @@ public class BraintreePlugin: CAPPlugin {
                 "lastTwo": cardNonce.lastTwo!,
                 "cardHolderName": cardNonce.cardholderName,
                 //"network": cardNonce.cardNetwork // <---------------@@@ this cause error in IOS
+                "threeDSecureCard": [
+                    "threeDSecureVerified": cardNonce.threeDSecureInfo.wasVerified,
+                    "liabilityShifted": cardNonce.threeDSecureInfo.liabilityShifted,
+                    "liabilityShiftPossible": cardNonce.threeDSecureInfo.liabilityShiftPossible
+                ]
             ]
         }
 
@@ -219,10 +224,6 @@ public class BraintreePlugin: CAPPlugin {
             response["venmo"] = [
                 "username": venmoAccountNonce.username
             ]
-        }
-        
-        if(paymentMethodNonce is BTApplePayCardNonce){
-            
         }
 
         return response;
@@ -243,6 +244,12 @@ public class BraintreePlugin: CAPPlugin {
         response["nonce"] = paymentMethodNonce.nonce
         response["type"] = paymentMethodNonce.type
         response["localizedDescription"] = paymentMethodNonce.localizedDescription
+//        var applePayNonce: BTApplePayCardNonce = paymentMethodNonce as! BTApplePayCardNonce;
+//        applePayNonce.binData;
+        response["applePay"] = [
+//            "username": venmoAccountNonce.username
+//            applePayNonce
+        ]
         if let callID = self.showCallID, let call = self.bridge?.savedCall(withID: callID) {
             call.resolve(response);
             self.bridge?.releaseCall(call)

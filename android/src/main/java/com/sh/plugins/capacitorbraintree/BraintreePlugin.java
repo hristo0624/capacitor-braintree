@@ -15,6 +15,7 @@ import com.braintreepayments.api.models.CardNonce;
 import com.braintreepayments.api.models.PayPalAccountNonce;
 import com.braintreepayments.api.models.GooglePaymentRequest;
 import com.braintreepayments.api.models.GooglePaymentCardNonce;
+import com.braintreepayments.api.models.PostalAddress;
 import com.braintreepayments.api.models.ThreeDSecureInfo;
 import com.braintreepayments.api.models.ThreeDSecurePostalAddress;
 import com.braintreepayments.api.models.ThreeDSecureRequest;
@@ -189,6 +190,18 @@ public class BraintreePlugin extends Plugin {
         return resultMap;
     }
 
+    private JSObject formatAddress(PostalAddress address) {
+        JSObject addressMap = new JSObject();
+        addressMap.put("name", address.getRecipientName());
+        addressMap.put("address1", address.getStreetAddress());
+        addressMap.put("address2", address.getExtendedAddress());
+        addressMap.put("locality", address.getLocality());
+        addressMap.put("administrativeArea", address.getRegion());
+        addressMap.put("postalCode", address.getPostalCode());
+        addressMap.put("countryCode", address.getCountryCodeAlpha2());
+        return addressMap;
+    }
+
     /**
      * Helper used to return a dictionary of values from the given payment method nonce.
      * Handles several different types of nonces (eg for cards, PayPal, etc).
@@ -216,6 +229,16 @@ public class BraintreePlugin extends Plugin {
             innerMap.put("network", cardNonce.getCardType());
             innerMap.put("cardHolderName", cardNonce.getCardholderName());
 
+            ThreeDSecureInfo threeDSecureInfo = cardNonce.getThreeDSecureInfo();
+
+            if (threeDSecureInfo != null) {
+                JSObject threeDMap = new JSObject();
+                threeDMap.put("threeDSecureVerified", threeDSecureInfo.wasVerified());
+                threeDMap.put("liabilityShifted", threeDSecureInfo.isLiabilityShifted());
+                threeDMap.put("liabilityShiftPossible", threeDSecureInfo.isLiabilityShiftPossible());
+
+                innerMap.put("threeDSecureCard", threeDMap);
+            }
             resultMap.put("card", innerMap);
         }
 
@@ -228,8 +251,8 @@ public class BraintreePlugin extends Plugin {
             resultMap.put("firstName", payPalAccountNonce.getFirstName());
             resultMap.put("lastName", payPalAccountNonce.getLastName());
             resultMap.put("phone", payPalAccountNonce.getPhone());
-            //resultMap.put("billingAddress", payPalAccountNonce.getBillingAddress()); //TODO
-            //resultMap.put("shippingAddress", payPalAccountNonce.getShippingAddress()); //TODO
+            // resultMap.put("billingAddress", payPalAccountNonce.getBillingAddress()); //TODO
+            // resultMap.put("shippingAddress", payPalAccountNonce.getShippingAddress()); //TODO
             resultMap.put("clientMetadataId", payPalAccountNonce.getClientMetadataId());
             resultMap.put("payerId", payPalAccountNonce.getPayerId());
 
@@ -239,15 +262,7 @@ public class BraintreePlugin extends Plugin {
         // 3D Secure
         if (paymentMethodNonce instanceof CardNonce) {
             CardNonce cardNonce = (CardNonce) paymentMethodNonce;
-            ThreeDSecureInfo threeDSecureInfo = cardNonce.getThreeDSecureInfo();
 
-            if (threeDSecureInfo != null) {
-                JSObject innerMap = new JSObject();
-                innerMap.put("liabilityShifted", threeDSecureInfo.isLiabilityShifted());
-                innerMap.put("liabilityShiftPossible", threeDSecureInfo.isLiabilityShiftPossible());
-
-                resultMap.put("threeDSecureCard", innerMap);
-            }
         }
 
         // Venmo
@@ -265,6 +280,11 @@ public class BraintreePlugin extends Plugin {
 
             JSObject innerMap = new JSObject();
             innerMap.put("lastTwo", googlePayCardNonce.getLastTwo());
+            innerMap.put("email", googlePayCardNonce.getEmail());
+            innerMap.put("billingAddress", formatAddress(googlePayCardNonce.getBillingAddress()));
+            innerMap.put("shippingAddress", formatAddress(googlePayCardNonce.getShippingAddress()));
+
+            resultMap.put("googlePay", innerMap);
         }
 
         return resultMap;

@@ -20,6 +20,20 @@ export interface DropInOptions {
 export interface DataCollectorOptions {
     merchantId: string;
 }
+export interface PostalAddress {
+    name: string;
+    address1: string;
+    address2: string;
+    locality: string;
+    administrativeArea: string;
+    postalCode: string;
+    countryCode: string;
+}
+export interface ThreeDSecureCard {
+    threeDSecureVerified: boolean;
+    liabilityShifted: boolean;
+    liabilityShiftPossible: boolean;
+}
 export interface DropInResult {
     cancelled: boolean;
     nonce: string;
@@ -30,6 +44,7 @@ export interface DropInResult {
         lastTwo: string;
         network: string;
         cardHolderName: string;
+        threeDSecureCard: ThreeDSecureCard;
     };
     payPalAccount: {
         email: string;
@@ -41,7 +56,12 @@ export interface DropInResult {
         clientMetadataId: string;
         payerId: string;
     };
-    applePaycard: any;
+    applePay: any;
+    googlePay: {
+        email: string;
+        billingAddress: PostalAddress;
+        shippingAddress: PostalAddress;
+    };
     threeDSecureCard: {
         liabilityShifted: boolean;
         liabilityShiftPossible: boolean;

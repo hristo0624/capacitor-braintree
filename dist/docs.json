@@ -233,8 +233,10 @@
           "name": "card",
           "tags": [],
           "docs": "",
-          "complexTypes": [],
-          "type": "{ lastTwo: string; network: string; cardHolderName: string; }"
+          "complexTypes": [
+            "ThreeDSecureCard"
+          ],
+          "type": "{ lastTwo: string; network: string; cardHolderName: string; threeDSecureCard: ThreeDSecureCard; }"
         },
         {
           "name": "payPalAccount",
@@ -244,11 +246,20 @@
           "type": "{ email: string; firstName: string; lastName: string; phone: string; billingAddress: string; shippingAddress: string; clientMetadataId: string; payerId: string; }"
         },
         {
-          "name": "applePaycard",
+          "name": "applePay",
           "tags": [],
           "docs": "",
           "complexTypes": [],
           "type": "any"
+        },
+        {
+          "name": "googlePay",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [
+            "PostalAddress"
+          ],
+          "type": "{ email: string; billingAddress: PostalAddress; shippingAddress: PostalAddress; }"
         },
         {
           "name": "threeDSecureCard",
@@ -263,6 +274,94 @@
           "docs": "",
           "complexTypes": [],
           "type": "{ username: string; }"
+        }
+      ]
+    },
+    {
+      "name": "ThreeDSecureCard",
+      "slug": "threedsecurecard",
+      "docs": "",
+      "tags": [],
+      "methods": [],
+      "properties": [
+        {
+          "name": "threeDSecureVerified",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "boolean"
+        },
+        {
+          "name": "liabilityShifted",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "boolean"
+        },
+        {
+          "name": "liabilityShiftPossible",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "boolean"
+        }
+      ]
+    },
+    {
+      "name": "PostalAddress",
+      "slug": "postaladdress",
+      "docs": "",
+      "tags": [],
+      "methods": [],
+      "properties": [
+        {
+          "name": "name",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string"
+        },
+        {
+          "name": "address1",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string"
+        },
+        {
+          "name": "address2",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string"
+        },
+        {
+          "name": "locality",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string"
+        },
+        {
+          "name": "administrativeArea",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string"
+        },
+        {
+          "name": "postalCode",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string"
+        },
+        {
+          "name": "countryCode",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string"
         }
       ]
     },
