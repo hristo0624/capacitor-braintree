@@ -32,6 +32,7 @@ export interface DropInResult {
   card: {
     lastTwo: string;
     network: string;
+    cardHolderName: string;
   };
   payPalAccount: {
     email: string;

@@ -206,6 +206,7 @@ public class BraintreePlugin: CAPPlugin {
             response["deviceData"] = PPDataCollector.collectPayPalDeviceData()
             response["card"] = [
                 "lastTwo": cardNonce.lastTwo!,
+                "cardHolderName": cardNonce.cardholderName,
                 //"network": cardNonce.cardNetwork // <---------------@@@ this cause error in IOS
             ]
         }

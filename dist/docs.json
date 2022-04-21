@@ -234,7 +234,7 @@
           "tags": [],
           "docs": "",
           "complexTypes": [],
-          "type": "{ lastTwo: string; network: string; }"
+          "type": "{ lastTwo: string; network: string; cardHolderName: string; }"
         },
         {
           "name": "payPalAccount",

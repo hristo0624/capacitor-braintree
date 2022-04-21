@@ -214,6 +214,7 @@ public class BraintreePlugin extends Plugin {
             JSObject innerMap = new JSObject();
             innerMap.put("lastTwo", cardNonce.getLastTwo());
             innerMap.put("network", cardNonce.getCardType());
+            innerMap.put("cardHolderName", cardNonce.getCardholderName());
 
             resultMap.put("card", innerMap);
         }

@@ -203,7 +203,7 @@ getDeviceData(options: DataCollectorOptions) => any
 | **`type`**                 | <code>string</code>                                                                                                                                                             |
 | **`localizedDescription`** | <code>string</code>                                                                                                                                                             |
 | **`deviceData`**           | <code>string</code>                                                                                                                                                             |
-| **`card`**                 | <code>{ lastTwo: string; network: string; }</code>                                                                                                                              |
+| **`card`**                 | <code>{ lastTwo: string; network: string; cardHolderName: string; }</code>                                                                                                      |
 | **`payPalAccount`**        | <code>{ email: string; firstName: string; lastName: string; phone: string; billingAddress: string; shippingAddress: string; clientMetadataId: string; payerId: string; }</code> |
 | **`applePaycard`**         | <code>any</code>                                                                                                                                                                |
 | **`threeDSecureCard`**     | <code>{ liabilityShifted: boolean; liabilityShiftPossible: boolean; }</code>                                                                                                    |
