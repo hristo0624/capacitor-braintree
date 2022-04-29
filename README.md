@@ -112,6 +112,7 @@ if (!payment.cancelled || !payment.nonce) {
 * [`setToken(...)`](#settoken)
 * [`showDropIn(...)`](#showdropin)
 * [`getDeviceData(...)`](#getdevicedata)
+* [`getRecentMethods(...)`](#getrecentmethods)
 * [Interfaces](#interfaces)
 
 </docgen-index>
@@ -164,6 +165,21 @@ getDeviceData(options: DataCollectorOptions) => any
 --------------------
 
 
+### getRecentMethods(...)
+
+```typescript
+getRecentMethods(options: DropInToken) => any
+```
+
+| Param         | Type                                                |
+| ------------- | --------------------------------------------------- |
+| **`options`** | <code><a href="#dropintoken">DropInToken</a></code> |
+
+**Returns:** <code>any</code>
+
+--------------------
+
+
 ### Interfaces
 
 
@@ -203,12 +219,22 @@ getDeviceData(options: DataCollectorOptions) => any
 | **`type`**                 | <code>string</code>                                                                                                                                                             |
 | **`localizedDescription`** | <code>string</code>                                                                                                                                                             |
 | **`deviceData`**           | <code>string</code>                                                                                                                                                             |
-| **`card`**                 | <code>{ lastTwo: string; network: string; cardHolderName: string; threeDSecureCard: <a href="#threedsecurecard">ThreeDSecureCard</a>; }</code>                                  |
+| **`card`**                 | <code><a href="#cardresult">CardResult</a></code>                                                                                                                               |
 | **`payPalAccount`**        | <code>{ email: string; firstName: string; lastName: string; phone: string; billingAddress: string; shippingAddress: string; clientMetadataId: string; payerId: string; }</code> |
 | **`applePay`**             | <code>any</code>                                                                                                                                                                |
 | **`googlePay`**            | <code>{ email: string; billingAddress: <a href="#postaladdress">PostalAddress</a>; shippingAddress: <a href="#postaladdress">PostalAddress</a>; }</code>                        |
 | **`threeDSecureCard`**     | <code>{ liabilityShifted: boolean; liabilityShiftPossible: boolean; }</code>                                                                                                    |
 | **`venmoAccount`**         | <code>{ username: string; }</code>                                                                                                                                              |
+
+
+#### CardResult
+
+| Prop                   | Type                                                          |
+| ---------------------- | ------------------------------------------------------------- |
+| **`lastTwo`**          | <code>string</code>                                           |
+| **`network`**          | <code>string</code>                                           |
+| **`cardHolderName`**   | <code>string</code>                                           |
+| **`threeDSecureCard`** | <code><a href="#threedsecurecard">ThreeDSecureCard</a></code> |
 
 
 #### ThreeDSecureCard
@@ -238,6 +264,14 @@ getDeviceData(options: DataCollectorOptions) => any
 | Prop             | Type                |
 | ---------------- | ------------------- |
 | **`merchantId`** | <code>string</code> |
+
+
+#### RecentMethod
+
+| Prop                  | Type                                              |
+| --------------------- | ------------------------------------------------- |
+| **`previousPayment`** | <code>boolean</code>                              |
+| **`data`**            | <code><a href="#cardresult">CardResult</a></code> |
 
 </docgen-api>
 

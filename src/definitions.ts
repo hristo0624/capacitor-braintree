@@ -39,18 +39,25 @@ export interface ThreeDSecureCard {
   liabilityShiftPossible: boolean;
 }
 
+export interface CardResult {
+  lastTwo: string;
+  network: string;
+  cardHolderName: string;
+  threeDSecureCard: ThreeDSecureCard;
+}
+
+export interface RecentMethod {
+  previousPayment: boolean;
+  data?: CardResult;
+}
+
 export interface DropInResult {
   cancelled: boolean;
   nonce: string;
   type: string;
   localizedDescription: string;
   deviceData: string;
-  card: {
-    lastTwo: string;
-    network: string;
-    cardHolderName: string;
-    threeDSecureCard: ThreeDSecureCard;
-  };
+  card: CardResult;
   payPalAccount: {
     email: string;
     firstName: string;
@@ -82,4 +89,6 @@ export interface BraintreePlugin {
   showDropIn(options: DropInOptions): Promise<DropInResult>;
 
   getDeviceData(options: DataCollectorOptions): Promise<any>;
+
+  getRecentMethods(options: DropInToken): Promise<RecentMethod>;
 }

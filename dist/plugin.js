@@ -15,6 +15,9 @@ var capacitorBraintree = (function (exports, core) {
         getDeviceData(options) {
             return this.getDeviceData(options);
         }
+        getRecentMethods(options) {
+            return this.getRecentMethods(options);
+        }
     }
 
     var web = /*#__PURE__*/Object.freeze({

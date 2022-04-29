@@ -9,6 +9,7 @@ import androidx.activity.result.ActivityResult;
 
 import com.braintreepayments.api.BraintreeFragment;
 import com.braintreepayments.api.DataCollector;
+import com.braintreepayments.api.dropin.utils.PaymentMethodType;
 import com.braintreepayments.api.exceptions.InvalidArgumentException;
 import com.braintreepayments.api.interfaces.BraintreeResponseListener;
 import com.braintreepayments.api.models.CardNonce;
@@ -103,6 +104,60 @@ public class BraintreePlugin extends Plugin {
     }
 
     @PluginMethod()
+    public void getRecentMethods(PluginCall call) throws InvalidArgumentException {
+        String token = call.getString("token");
+
+        if (!call.getData().has("token")){
+            call.reject("A token is required.");
+            return;
+        }
+
+
+        DropInResult.fetchDropInResult(getActivity(), token, new DropInResult.DropInResultListener() {
+            @Override
+            public void onError(Exception exception) {
+                // an error occurred
+                JSObject resultMap = new JSObject();
+                resultMap.put("previousPayment", false);
+                call.resolve(resultMap);
+            }
+
+            @Override
+            public void onResult(DropInResult result) {
+                if (result.getPaymentMethodType() != null) {
+                    // use the icon and name to show in your UI
+                    int icon = result.getPaymentMethodType().getDrawable();
+                    int name = result.getPaymentMethodType().getLocalizedName();
+
+                    PaymentMethodType paymentMethodType = result.getPaymentMethodType();
+                    if (paymentMethodType == PaymentMethodType.GOOGLE_PAYMENT) {
+                        // The last payment method the user used was Google Pay.
+                        // The Google Pay flow will need to be performed by the
+                        // user again at the time of checkout.
+                        JSObject resultMap = new JSObject();
+                        resultMap.put("previousPayment", false);
+                        call.resolve(resultMap);
+                    } else {
+                        // Use the payment method show in your UI and charge the user
+                        // at the time of checkout.
+                        JSObject resultMap = new JSObject();
+                        resultMap.put("previousPayment", true);
+                        PaymentMethodNonce paymentMethod = result.getPaymentMethodNonce();
+                        resultMap.put("data", handleNonce(paymentMethod, result.getDeviceData()));
+                        call.resolve(resultMap);
+                    }
+                } else {
+                    // there was no existing payment method
+                    JSObject resultMap = new JSObject();
+                    resultMap.put("previousPayment", false);
+                    call.resolve(resultMap);
+                }
+            }
+        });
+        call.resolve();
+    }
+
+    @PluginMethod()
     public void showDropIn(PluginCall call) throws JSONException {
         ThreeDSecurePostalAddress address = new ThreeDSecurePostalAddress()
             .givenName(call.getString("givenName")) // ASCII-printable characters required, else will throw a validation error
@@ -125,7 +180,9 @@ public class BraintreePlugin extends Plugin {
             .cardholderNameStatus(CardForm.FIELD_REQUIRED)
             .requestThreeDSecureVerification(true)
             .collectDeviceData(true)
-            .threeDSecureRequest(threeDSecureRequest);
+            .threeDSecureRequest(threeDSecureRequest)
+            .vaultManager(true);
+
         if (call.hasOption("disabled")) {
             JSArray disables = call.getArray("disabled");
             if (disables.get(0) == "googlePay") {

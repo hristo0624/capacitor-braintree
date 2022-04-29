@@ -65,6 +65,32 @@ public class BraintreePlugin: CAPPlugin {
 
         call.resolve()
     }
+    
+    @objc func getRecentMethods(_ call: CAPPluginCall) {
+        let token = call.getString("token")
+        if ((token?.isEmpty) != nil) {
+            call.reject("A token is required.")
+            return
+        }
+        
+        BTDropInResult.fetch(forAuthorization: token ?? "") { (result, error) in
+            guard let result = result, error == nil else {
+                let response: [String: Any] = ["previousPayment": false]
+                call.resolve(response);
+                return
+            }
+            
+            if result.paymentOptionType == .applePay {
+                let response: [String: Any] = ["previousPayment": false]
+                call.resolve(response);
+            } else {
+                var response: [String: Any] = ["previousPayment": true]
+                let nonce = self.getPaymentMethodNonce(paymentMethodNonce:result.paymentMethod!)
+                response["data"] = nonce;
+                call.resolve(response);
+            }
+        }
+    }
 
     /**
      * Show DropIn UI
@@ -106,8 +132,9 @@ public class BraintreePlugin: CAPPlugin {
         let dropInRequest = BTDropInRequest()
         dropInRequest.threeDSecureVerification = true
         dropInRequest.cardholderNameSetting = .required
-        dropInRequest.threeDSecureRequest = threeDSecureRequest
-
+//        dropInRequest.threeDSecureRequest = threeDSecureRequest
+        dropInRequest.vaultManager = true
+        
         /**
          * Disabble Payment Methods
          */
@@ -157,7 +184,13 @@ public class BraintreePlugin: CAPPlugin {
                         self?.bridge?.viewController?.present(applePayController, animated: true)
                     }
                 } else {
-                    call.resolve(self.getPaymentMethodNonce(paymentMethodNonce: result.paymentMethod!))
+                    let paymentMethodNonce = result.paymentMethod
+                    if (paymentMethodNonce as? BTCardNonce)?.threeDSecureInfo.wasVerified == false {
+                        self.performThreeDSecureVerification(threeDSecureRequest: threeDSecureRequest, paymentMethodNonce: paymentMethodNonce!, call: call);
+                    } else {
+                        call.resolve(self.getPaymentMethodNonce(paymentMethodNonce: result.paymentMethod!))
+                    }
+                    
                 }
             }
             controller.dismiss(animated: true, completion: nil)
@@ -228,6 +261,34 @@ public class BraintreePlugin: CAPPlugin {
 
         return response;
 
+    }
+    
+    func performThreeDSecureVerification(threeDSecureRequest: BTThreeDSecureRequest, paymentMethodNonce: BTPaymentMethodNonce, call: CAPPluginCall) {
+        guard let apiClient = BTAPIClient(authorization: self.token) else { return }
+//        guard let nonce = paymentMethodNonce.nonce else { return }
+        
+        threeDSecureRequest.nonce = paymentMethodNonce.nonce
+
+        let paymentFlowDriver = BTPaymentFlowDriver(apiClient: apiClient)
+        paymentFlowDriver.viewControllerPresentingDelegate = self
+        
+        paymentFlowDriver.startPaymentFlow(threeDSecureRequest) { (result, error) in
+//            self.selectedNonce = nil
+            
+            if let error = error {
+                if (error as NSError).code == BTPaymentFlowDriverErrorType.canceled.rawValue {
+                    // User cancelled 3DS flow and nonce was consumed
+                } else {
+                    // An error occurred and nonce was consumed
+                }
+                call.resolve(self.getPaymentMethodNonce(paymentMethodNonce: paymentMethodNonce));
+                return
+            }
+        
+            if let threeDSecureResult = result as? BTThreeDSecureResult {
+                call.resolve(self.getPaymentMethodNonce(paymentMethodNonce: threeDSecureResult.tokenizedCard));
+            }
+        }
     }
     
     func resolveApplePayFail(message: String?) {
@@ -330,3 +391,20 @@ extension BraintreePlugin: PKPaymentAuthorizationViewControllerDelegate {
         print("Apple Pay will Authorize Payment")
     }
 }
+
+// MARK: - BTViewControllerPresentingDelegate
+
+extension BraintreePlugin: BTViewControllerPresentingDelegate {
+    public func paymentDriver(_ driver: Any, requestsPresentationOf viewController: UIViewController) {
+        DispatchQueue.main.async { [weak self] in
+            self?.bridge?.viewController?.present(viewController, animated: true);
+        }
+    }
+    
+    public func paymentDriver(_ driver: Any, requestsDismissalOf viewController: UIViewController) {
+        DispatchQueue.main.async { [weak self] in
+            viewController.dismiss(animated: true, completion: nil);
+        }
+    }
+}
+

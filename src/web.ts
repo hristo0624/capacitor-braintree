@@ -5,7 +5,8 @@ import type {
   DropInOptions,
   DropInResult,
   DropInToken,
-  DataCollectorOptions
+  DataCollectorOptions,
+  RecentMethod
 } from './definitions';
 
 export class BraintreeWeb extends WebPlugin implements BraintreePlugin {
@@ -19,5 +20,9 @@ export class BraintreeWeb extends WebPlugin implements BraintreePlugin {
 
   getDeviceData(options: DataCollectorOptions): Promise<any> {
     return this.getDeviceData(options);
+  }
+
+  getRecentMethods(options: DropInToken): Promise<RecentMethod> {
+    return this.getRecentMethods(options);
   }
 }

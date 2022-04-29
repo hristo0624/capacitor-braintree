@@ -9,5 +9,8 @@ export class BraintreeWeb extends WebPlugin {
     getDeviceData(options) {
         return this.getDeviceData(options);
     }
+    getRecentMethods(options) {
+        return this.getRecentMethods(options);
+    }
 }
 //# sourceMappingURL=web.js.map

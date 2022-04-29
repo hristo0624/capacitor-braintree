@@ -59,6 +59,25 @@
           "DataCollectorOptions"
         ],
         "slug": "getdevicedata"
+      },
+      {
+        "name": "getRecentMethods",
+        "signature": "(options: DropInToken) => any",
+        "parameters": [
+          {
+            "name": "options",
+            "docs": "",
+            "type": "DropInToken"
+          }
+        ],
+        "returns": "any",
+        "tags": [],
+        "docs": "",
+        "complexTypes": [
+          "DropInToken",
+          "RecentMethod"
+        ],
+        "slug": "getrecentmethods"
       }
     ],
     "properties": []
@@ -234,9 +253,9 @@
           "tags": [],
           "docs": "",
           "complexTypes": [
-            "ThreeDSecureCard"
+            "CardResult"
           ],
-          "type": "{ lastTwo: string; network: string; cardHolderName: string; threeDSecureCard: ThreeDSecureCard; }"
+          "type": "CardResult"
         },
         {
           "name": "payPalAccount",
@@ -274,6 +293,45 @@
           "docs": "",
           "complexTypes": [],
           "type": "{ username: string; }"
+        }
+      ]
+    },
+    {
+      "name": "CardResult",
+      "slug": "cardresult",
+      "docs": "",
+      "tags": [],
+      "methods": [],
+      "properties": [
+        {
+          "name": "lastTwo",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string"
+        },
+        {
+          "name": "network",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string"
+        },
+        {
+          "name": "cardHolderName",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string"
+        },
+        {
+          "name": "threeDSecureCard",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [
+            "ThreeDSecureCard"
+          ],
+          "type": "ThreeDSecureCard"
         }
       ]
     },
@@ -378,6 +436,31 @@
           "docs": "",
           "complexTypes": [],
           "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "RecentMethod",
+      "slug": "recentmethod",
+      "docs": "",
+      "tags": [],
+      "methods": [],
+      "properties": [
+        {
+          "name": "previousPayment",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "boolean"
+        },
+        {
+          "name": "data",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [
+            "CardResult"
+          ],
+          "type": "CardResult | undefined"
         }
       ]
     }
