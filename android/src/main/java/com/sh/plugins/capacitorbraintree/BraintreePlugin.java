@@ -192,6 +192,12 @@ public class BraintreePlugin extends Plugin {
                 dropInRequest.disableCard();
             }
         }
+
+        if (call.hasOption("deleteMethods")) {
+            dropInRequest.disableGooglePayment();
+            dropInRequest.disableCard();
+        }
+
         GooglePaymentRequest googlePaymentRequest = new GooglePaymentRequest()
                 .transactionInfo(TransactionInfo.newBuilder()
                         .setTotalPrice(call.getString("amount"))

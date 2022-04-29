@@ -154,6 +154,13 @@ public class BraintreePlugin: CAPPlugin {
             }
         }
 
+        if (call.hasOption("deleteMethods")) {
+            dropInRequest.paypalDisabled = true;
+            dropInRequest.venmoDisabled = true;
+            dropInRequest.applePayDisabled = true;
+            dropInRequest.cardDisabled = true;
+        }
+
         /**
          * Initialize DropIn UI
          */

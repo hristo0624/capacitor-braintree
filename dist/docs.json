@@ -114,6 +114,13 @@
           "type": "string"
         },
         {
+          "name": "deleteMethods",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "boolean | undefined"
+        },
+        {
           "name": "disabled",
           "tags": [],
           "docs": "",

@@ -4,15 +4,16 @@ export interface DropInToken {
 
 export interface DropInOptions {
   amount: string;
+  deleteMethods?: boolean;
   disabled?: string[];
-  givenName: string | undefined;
-  surname: string | undefined;
-  email: string | undefined;
-  phoneNumber: string | undefined;
-  streetAddress: string | undefined;
-  postalCode: string | undefined;
-  locality: string | undefined;
-  countryCodeAlpha2: string | undefined;
+  givenName?: string | undefined;
+  surname?: string | undefined;
+  email?: string | undefined;
+  phoneNumber?: string | undefined;
+  streetAddress?: string | undefined;
+  postalCode?: string | undefined;
+  locality?: string | undefined;
+  countryCodeAlpha2?: string | undefined;
   appleMerchantId?: string;
   googleMerchantId?: string;
   appleMerchantName?: string;

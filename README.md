@@ -192,22 +192,23 @@ getRecentMethods(options: DropInToken) => any
 
 #### DropInOptions
 
-| Prop                    | Type                |
-| ----------------------- | ------------------- |
-| **`amount`**            | <code>string</code> |
-| **`disabled`**          | <code>{}</code>     |
-| **`givenName`**         | <code>string</code> |
-| **`surname`**           | <code>string</code> |
-| **`email`**             | <code>string</code> |
-| **`phoneNumber`**       | <code>string</code> |
-| **`streetAddress`**     | <code>string</code> |
-| **`postalCode`**        | <code>string</code> |
-| **`locality`**          | <code>string</code> |
-| **`countryCodeAlpha2`** | <code>string</code> |
-| **`appleMerchantId`**   | <code>string</code> |
-| **`googleMerchantId`**  | <code>string</code> |
-| **`appleMerchantName`** | <code>string</code> |
-| **`currencyCode`**      | <code>string</code> |
+| Prop                    | Type                 |
+| ----------------------- | -------------------- |
+| **`amount`**            | <code>string</code>  |
+| **`deleteMethods`**     | <code>boolean</code> |
+| **`disabled`**          | <code>{}</code>      |
+| **`givenName`**         | <code>string</code>  |
+| **`surname`**           | <code>string</code>  |
+| **`email`**             | <code>string</code>  |
+| **`phoneNumber`**       | <code>string</code>  |
+| **`streetAddress`**     | <code>string</code>  |
+| **`postalCode`**        | <code>string</code>  |
+| **`locality`**          | <code>string</code>  |
+| **`countryCodeAlpha2`** | <code>string</code>  |
+| **`appleMerchantId`**   | <code>string</code>  |
+| **`googleMerchantId`**  | <code>string</code>  |
+| **`appleMerchantName`** | <code>string</code>  |
+| **`currencyCode`**      | <code>string</code>  |
 
 
 #### DropInResult
