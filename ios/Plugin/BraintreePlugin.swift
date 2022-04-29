@@ -68,7 +68,7 @@ public class BraintreePlugin: CAPPlugin {
     
     @objc func getRecentMethods(_ call: CAPPluginCall) {
         let token = call.getString("token")
-        if ((token?.isEmpty) != nil) {
+        if token == nil, token == "" {
             call.reject("A token is required.")
             return
         }
@@ -84,10 +84,16 @@ public class BraintreePlugin: CAPPlugin {
                 let response: [String: Any] = ["previousPayment": false]
                 call.resolve(response);
             } else {
-                var response: [String: Any] = ["previousPayment": true]
-                let nonce = self.getPaymentMethodNonce(paymentMethodNonce:result.paymentMethod!)
-                response["data"] = nonce;
-                call.resolve(response);
+                if (result.paymentMethod != nil) {
+                    var response: [String: Any] = ["previousPayment": true]
+                    let nonce = self.getPaymentMethodNonce(paymentMethodNonce:result.paymentMethod!)
+                    response["data"] = nonce;
+                    call.resolve(response);
+                } else {
+                    let response: [String: Any] = ["previousPayment": false]
+                    call.resolve(response);
+                }
+                
             }
         }
     }
@@ -132,7 +138,7 @@ public class BraintreePlugin: CAPPlugin {
         let dropInRequest = BTDropInRequest()
         dropInRequest.threeDSecureVerification = true
         dropInRequest.cardholderNameSetting = .required
-//        dropInRequest.threeDSecureRequest = threeDSecureRequest
+        dropInRequest.threeDSecureRequest = threeDSecureRequest
         dropInRequest.vaultManager = true
         
         /**
@@ -311,9 +317,9 @@ public class BraintreePlugin: CAPPlugin {
         var response: [String: Any] = ["cancelled": false]
         response["nonce"] = paymentMethodNonce.nonce
         response["type"] = paymentMethodNonce.type
+        response["deviceData"] = PPDataCollector.collectPayPalDeviceData()
         response["localizedDescription"] = paymentMethodNonce.localizedDescription
 //        var applePayNonce: BTApplePayCardNonce = paymentMethodNonce as! BTApplePayCardNonce;
-//        applePayNonce.binData;
         response["applePay"] = [
 //            "username": venmoAccountNonce.username
 //            applePayNonce
