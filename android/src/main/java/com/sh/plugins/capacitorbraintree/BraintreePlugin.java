@@ -281,7 +281,7 @@ public class BraintreePlugin extends Plugin {
         resultMap.put("type", paymentMethodNonce.getTypeLabel());
         resultMap.put("localizedDescription", paymentMethodNonce.getDescription());
         this.deviceData = deviceData;
-        // resultMap.put("deviceData", deviceData);
+        resultMap.put("deviceData", deviceData);
 
         // Card
         if (paymentMethodNonce instanceof CardNonce) {
