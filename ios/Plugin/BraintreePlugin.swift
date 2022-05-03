@@ -157,7 +157,7 @@ public class BraintreePlugin: CAPPlugin {
         let threeDSecureRequest = BTThreeDSecureRequest()
         threeDSecureRequest.versionRequested = .version2
         threeDSecureRequest.amount = NSDecimalNumber(string: amount)
-        threeDSecureRequest.email = call.getString("email") ?? ""
+//        threeDSecureRequest.email = call.getString("email") ?? ""
 
         let address = BTThreeDSecurePostalAddress()
         address.givenName = call.getString("givenName") ?? "" // ASCII-printable characters required, else will throw a validation error
@@ -167,7 +167,7 @@ public class BraintreePlugin: CAPPlugin {
         address.locality =  call.getString("locality") ?? ""
         address.postalCode =  call.getString("postalCode") ?? ""
         address.countryCodeAlpha2 = call.getString("countryCodeAlpha2") ?? ""
-        threeDSecureRequest.billingAddress = address
+//        threeDSecureRequest.billingAddress = address
 
         let dropInRequest = BTDropInRequest()
         dropInRequest.threeDSecureVerification = true
@@ -212,24 +212,24 @@ public class BraintreePlugin: CAPPlugin {
                 call.resolve(["cancelled": true])
             } else if let result = result {
                 if (result.paymentMethod === nil && result.paymentOptionType == BTUIKPaymentOptionType.applePay) {
-//                    let paymentRequest = PKPaymentRequest()
-//                    paymentRequest.paymentSummaryItems = [PKPaymentSummaryItem(label: self.merchantName, amount: payAmount)]
-//                    paymentRequest.supportedNetworks = [.visa, .masterCard, .amex, .discover]
-//                    paymentRequest.merchantCapabilities = .capability3DS
-//                    paymentRequest.currencyCode = call.getString("currencyCode") ?? "GBP"
-//                    paymentRequest.countryCode = call.getString("countryCodeAlpha2") ?? "GB"
-//                    paymentRequest.merchantIdentifier = call.getString("appleMerchantId") ?? ""
-//
-//                    guard let applePayController = PKPaymentAuthorizationViewController(paymentRequest: paymentRequest) else {
-//                        print("Unable to initialize PKPaymentAuthorizationViewController for Apple Pay")
-//                        return
-//                    }
-//                    applePayController.delegate = self
-//
-//                    print("Presenting Apple Pay Sheet")
-//                    DispatchQueue.main.async { [weak self] in
-//                        self?.bridge?.viewController?.present(applePayController, animated: true)
-//                    }
+                    let paymentRequest = PKPaymentRequest()
+                    paymentRequest.paymentSummaryItems = [PKPaymentSummaryItem(label: self.merchantName, amount: payAmount)]
+                    paymentRequest.supportedNetworks = [.visa, .masterCard, .amex, .discover]
+                    paymentRequest.merchantCapabilities = .capability3DS
+                    paymentRequest.currencyCode = call.getString("currencyCode") ?? "GBP"
+                    paymentRequest.countryCode = call.getString("countryCodeAlpha2") ?? "GB"
+                    paymentRequest.merchantIdentifier = call.getString("appleMerchantId") ?? ""
+
+                    guard let applePayController = PKPaymentAuthorizationViewController(paymentRequest: paymentRequest) else {
+                        print("Unable to initialize PKPaymentAuthorizationViewController for Apple Pay")
+                        return
+                    }
+                    applePayController.delegate = self
+
+                    print("Presenting Apple Pay Sheet")
+                    DispatchQueue.main.async { [weak self] in
+                        self?.bridge?.viewController?.present(applePayController, animated: true)
+                    }
                 } else {
                     let paymentMethodNonce = result.paymentMethod
                     if (paymentMethodNonce as? BTCardNonce)?.threeDSecureInfo.wasVerified == false {
