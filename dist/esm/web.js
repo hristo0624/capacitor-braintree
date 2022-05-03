@@ -12,5 +12,8 @@ export class BraintreeWeb extends WebPlugin {
     getRecentMethods(options) {
         return this.getRecentMethods(options);
     }
+    showAppleGooglePay(options) {
+        return this.showAppleGooglePay(options);
+    }
 }
 //# sourceMappingURL=web.js.map

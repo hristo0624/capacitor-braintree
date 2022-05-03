@@ -18,6 +18,9 @@ var capacitorBraintree = (function (exports, core) {
         getRecentMethods(options) {
             return this.getRecentMethods(options);
         }
+        showAppleGooglePay(options) {
+            return this.showAppleGooglePay(options);
+        }
     }
 
     var web = /*#__PURE__*/Object.freeze({

@@ -66,12 +66,46 @@ public class BraintreePlugin: CAPPlugin {
         call.resolve()
     }
     
+    func updateToken (token: String) {
+        guard let callID = self.showCallID, let call = bridge?.savedCall(withID: callID) else {
+            return
+        }
+        if token.isEmpty {
+            call.reject("A token is required.")
+            return
+        }
+        /**
+         * Set App Switch
+         */
+        guard let bundleIdentifier = Bundle.main.bundleIdentifier else {
+            call.reject("iOS internal error - failed to get bundle identifier via Bundle.main.bundleIdentifier");
+            return
+        }
+
+        if bundleIdentifier.count == 0 {
+            call.reject("iOS internal error - bundle identifier via Bundle.main.bundleIdentifier was zero length");
+            return
+        }
+
+        BTAppSwitch.setReturnURLScheme(bundleIdentifier + ".payments")
+        
+        /**
+         * Assign API token
+         */
+        self.token = token
+
+        if let apiClient = BTAPIClient(authorization: self.token) {
+            self.dataCollector = BTDataCollector(apiClient: apiClient)
+        }
+    }
+    
     @objc func getRecentMethods(_ call: CAPPluginCall) {
         let token = call.getString("token")
         if token == nil, token == "" {
             call.reject("A token is required.")
             return
         }
+        updateToken(token: token!)
         
         BTDropInResult.fetch(forAuthorization: token ?? "") { (result, error) in
             guard let result = result, error == nil else {
@@ -178,24 +212,24 @@ public class BraintreePlugin: CAPPlugin {
                 call.resolve(["cancelled": true])
             } else if let result = result {
                 if (result.paymentMethod === nil && result.paymentOptionType == BTUIKPaymentOptionType.applePay) {
-                    let paymentRequest = PKPaymentRequest()
-                    paymentRequest.paymentSummaryItems = [PKPaymentSummaryItem(label: self.merchantName, amount: payAmount)]
-                    paymentRequest.supportedNetworks = [.visa, .masterCard, .amex, .discover]
-                    paymentRequest.merchantCapabilities = .capability3DS
-                    paymentRequest.currencyCode = call.getString("currencyCode") ?? "GBP"
-                    paymentRequest.countryCode = call.getString("countryCodeAlpha2") ?? "GB"
-                    paymentRequest.merchantIdentifier = call.getString("appleMerchantId") ?? ""
-                    
-                    guard let applePayController = PKPaymentAuthorizationViewController(paymentRequest: paymentRequest) else {
-                        print("Unable to initialize PKPaymentAuthorizationViewController for Apple Pay")
-                        return
-                    }
-                    applePayController.delegate = self
-                    
-                    print("Presenting Apple Pay Sheet")
-                    DispatchQueue.main.async { [weak self] in
-                        self?.bridge?.viewController?.present(applePayController, animated: true)
-                    }
+//                    let paymentRequest = PKPaymentRequest()
+//                    paymentRequest.paymentSummaryItems = [PKPaymentSummaryItem(label: self.merchantName, amount: payAmount)]
+//                    paymentRequest.supportedNetworks = [.visa, .masterCard, .amex, .discover]
+//                    paymentRequest.merchantCapabilities = .capability3DS
+//                    paymentRequest.currencyCode = call.getString("currencyCode") ?? "GBP"
+//                    paymentRequest.countryCode = call.getString("countryCodeAlpha2") ?? "GB"
+//                    paymentRequest.merchantIdentifier = call.getString("appleMerchantId") ?? ""
+//
+//                    guard let applePayController = PKPaymentAuthorizationViewController(paymentRequest: paymentRequest) else {
+//                        print("Unable to initialize PKPaymentAuthorizationViewController for Apple Pay")
+//                        return
+//                    }
+//                    applePayController.delegate = self
+//
+//                    print("Presenting Apple Pay Sheet")
+//                    DispatchQueue.main.async { [weak self] in
+//                        self?.bridge?.viewController?.present(applePayController, animated: true)
+//                    }
                 } else {
                     let paymentMethodNonce = result.paymentMethod
                     if (paymentMethodNonce as? BTCardNonce)?.threeDSecureInfo.wasVerified == false {
@@ -210,6 +244,48 @@ public class BraintreePlugin: CAPPlugin {
         }
         DispatchQueue.main.async {
             self.bridge?.viewController?.present(dropIn!, animated: true, completion: nil)
+        }
+    }
+    
+    @objc func showAppleGooglePay(_ call: CAPPluginCall) {
+        let token = call.getString("token")
+        if token == nil, token == "" {
+            call.reject("A token is required.")
+            return
+        }
+        guard let amount = call.getString("amount") else {
+            call.reject("An amount is required.")
+            return;
+        }
+        
+        guard let mName = call.getString("appleMerchantName") else {
+            call.reject("Apple Pay Merchant Name is required.")
+            return;
+        }
+        
+        showCallID = call.callbackId;
+        bridge?.saveCall(call);
+        payAmount = NSDecimalNumber(string: amount)
+        merchantName = mName
+        updateToken(token: token!)
+        
+        let paymentRequest = PKPaymentRequest()
+        paymentRequest.paymentSummaryItems = [PKPaymentSummaryItem(label: merchantName, amount: payAmount)]
+        paymentRequest.supportedNetworks = [.visa, .masterCard, .amex, .discover]
+        paymentRequest.merchantCapabilities = .capability3DS
+//        paymentRequest.currencyCode = call.getString("currencyCode") ?? "GBP"
+//        paymentRequest.countryCode = call.getString("countryCodeAlpha2") ?? "GB"
+//        paymentRequest.merchantIdentifier = call.getString("appleMerchantId") ?? ""
+        
+        guard let applePayController = PKPaymentAuthorizationViewController(paymentRequest: paymentRequest) else {
+            print("Unable to initialize PKPaymentAuthorizationViewController for Apple Pay")
+            return
+        }
+        applePayController.delegate = self
+        
+        print("Presenting Apple Pay Sheet")
+        DispatchQueue.main.async { [weak self] in
+            self?.bridge?.viewController?.present(applePayController, animated: true)
         }
     }
 

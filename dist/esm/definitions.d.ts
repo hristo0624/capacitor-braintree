@@ -18,6 +18,14 @@ export interface DropInOptions {
     appleMerchantName?: string;
     currencyCode?: string;
 }
+export interface AppleGoogleOptions {
+    token: string;
+    amount: string | number;
+    appleMerchantName?: string;
+    appleMerchantId?: string;
+    currencyCode?: string;
+    countryCodeAlpha2?: string;
+}
 export interface DataCollectorOptions {
     merchantId: string;
 }
@@ -81,4 +89,5 @@ export interface BraintreePlugin {
     showDropIn(options: DropInOptions): Promise<DropInResult>;
     getDeviceData(options: DataCollectorOptions): Promise<any>;
     getRecentMethods(options: DropInToken): Promise<RecentMethod>;
+    showAppleGooglePay(options: AppleGoogleOptions): Promise<DropInResult>;
 }

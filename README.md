@@ -113,6 +113,7 @@ if (!payment.cancelled || !payment.nonce) {
 * [`showDropIn(...)`](#showdropin)
 * [`getDeviceData(...)`](#getdevicedata)
 * [`getRecentMethods(...)`](#getrecentmethods)
+* [`showAppleGooglePay(...)`](#showapplegooglepay)
 * [Interfaces](#interfaces)
 
 </docgen-index>
@@ -174,6 +175,21 @@ getRecentMethods(options: DropInToken) => any
 | Param         | Type                                                |
 | ------------- | --------------------------------------------------- |
 | **`options`** | <code><a href="#dropintoken">DropInToken</a></code> |
+
+**Returns:** <code>any</code>
+
+--------------------
+
+
+### showAppleGooglePay(...)
+
+```typescript
+showAppleGooglePay(options: AppleGoogleOptions) => any
+```
+
+| Param         | Type                                                              |
+| ------------- | ----------------------------------------------------------------- |
+| **`options`** | <code><a href="#applegoogleoptions">AppleGoogleOptions</a></code> |
 
 **Returns:** <code>any</code>
 
@@ -273,6 +289,18 @@ getRecentMethods(options: DropInToken) => any
 | --------------------- | ------------------------------------------------- |
 | **`previousPayment`** | <code>boolean</code>                              |
 | **`data`**            | <code><a href="#cardresult">CardResult</a></code> |
+
+
+#### AppleGoogleOptions
+
+| Prop                    | Type                          |
+| ----------------------- | ----------------------------- |
+| **`token`**             | <code>string</code>           |
+| **`amount`**            | <code>string \| number</code> |
+| **`appleMerchantName`** | <code>string</code>           |
+| **`appleMerchantId`**   | <code>string</code>           |
+| **`currencyCode`**      | <code>string</code>           |
+| **`countryCodeAlpha2`** | <code>string</code>           |
 
 </docgen-api>
 

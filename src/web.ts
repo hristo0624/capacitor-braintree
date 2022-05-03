@@ -6,7 +6,8 @@ import type {
   DropInResult,
   DropInToken,
   DataCollectorOptions,
-  RecentMethod
+  RecentMethod,
+  AppleGoogleOptions
 } from './definitions';
 
 export class BraintreeWeb extends WebPlugin implements BraintreePlugin {
@@ -24,5 +25,9 @@ export class BraintreeWeb extends WebPlugin implements BraintreePlugin {
 
   getRecentMethods(options: DropInToken): Promise<RecentMethod> {
     return this.getRecentMethods(options);
+  }
+
+  showAppleGooglePay(options: AppleGoogleOptions): Promise<DropInResult> {
+    return this.showAppleGooglePay(options);
   }
 }

@@ -78,6 +78,25 @@
           "RecentMethod"
         ],
         "slug": "getrecentmethods"
+      },
+      {
+        "name": "showAppleGooglePay",
+        "signature": "(options: AppleGoogleOptions) => any",
+        "parameters": [
+          {
+            "name": "options",
+            "docs": "",
+            "type": "AppleGoogleOptions"
+          }
+        ],
+        "returns": "any",
+        "tags": [],
+        "docs": "",
+        "complexTypes": [
+          "AppleGoogleOptions",
+          "DropInResult"
+        ],
+        "slug": "showapplegooglepay"
       }
     ],
     "properties": []
@@ -468,6 +487,57 @@
             "CardResult"
           ],
           "type": "CardResult | undefined"
+        }
+      ]
+    },
+    {
+      "name": "AppleGoogleOptions",
+      "slug": "applegoogleoptions",
+      "docs": "",
+      "tags": [],
+      "methods": [],
+      "properties": [
+        {
+          "name": "token",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string"
+        },
+        {
+          "name": "amount",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string | number"
+        },
+        {
+          "name": "appleMerchantName",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string | undefined"
+        },
+        {
+          "name": "appleMerchantId",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string | undefined"
+        },
+        {
+          "name": "currencyCode",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string | undefined"
+        },
+        {
+          "name": "countryCodeAlpha2",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string | undefined"
         }
       ]
     }
