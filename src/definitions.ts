@@ -102,5 +102,5 @@ export interface BraintreePlugin {
 
   getRecentMethods(options: DropInToken): Promise<RecentMethod>;
 
-  showAppleGooglePay(options: AppleGoogleOptions): Promise<DropInResult>;
+  showApplePay(options: AppleGoogleOptions): Promise<DropInResult>;
 }

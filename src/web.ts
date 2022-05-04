@@ -27,7 +27,7 @@ export class BraintreeWeb extends WebPlugin implements BraintreePlugin {
     return this.getRecentMethods(options);
   }
 
-  showAppleGooglePay(options: AppleGoogleOptions): Promise<DropInResult> {
-    return this.showAppleGooglePay(options);
+  showApplePay(options: AppleGoogleOptions): Promise<DropInResult> {
+    return this.showApplePay(options);
   }
 }

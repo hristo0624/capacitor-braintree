@@ -113,7 +113,7 @@ if (!payment.cancelled || !payment.nonce) {
 * [`showDropIn(...)`](#showdropin)
 * [`getDeviceData(...)`](#getdevicedata)
 * [`getRecentMethods(...)`](#getrecentmethods)
-* [`showAppleGooglePay(...)`](#showapplegooglepay)
+* [`showApplePay(...)`](#showapplepay)
 * [Interfaces](#interfaces)
 
 </docgen-index>
@@ -181,10 +181,10 @@ getRecentMethods(options: DropInToken) => any
 --------------------
 
 
-### showAppleGooglePay(...)
+### showApplePay(...)
 
 ```typescript
-showAppleGooglePay(options: AppleGoogleOptions) => any
+showApplePay(options: AppleGoogleOptions) => any
 ```
 
 | Param         | Type                                                              |

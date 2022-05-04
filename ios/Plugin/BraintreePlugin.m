@@ -7,5 +7,5 @@ CAP_PLUGIN(BraintreePlugin, "Braintree",
            CAP_PLUGIN_METHOD(getDeviceData, CAPPluginReturnPromise);
            CAP_PLUGIN_METHOD(setToken, CAPPluginReturnPromise);
            CAP_PLUGIN_METHOD(showDropIn, CAPPluginReturnPromise);
-           CAP_PLUGIN_METHOD(showAppleGooglePay, CAPPluginReturnPromise);
+           CAP_PLUGIN_METHOD(showApplePay, CAPPluginReturnPromise);
 )

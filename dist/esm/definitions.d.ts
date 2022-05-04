@@ -89,5 +89,5 @@ export interface BraintreePlugin {
     showDropIn(options: DropInOptions): Promise<DropInResult>;
     getDeviceData(options: DataCollectorOptions): Promise<any>;
     getRecentMethods(options: DropInToken): Promise<RecentMethod>;
-    showAppleGooglePay(options: AppleGoogleOptions): Promise<DropInResult>;
+    showApplePay(options: AppleGoogleOptions): Promise<DropInResult>;
 }

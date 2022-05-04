@@ -80,7 +80,7 @@
         "slug": "getrecentmethods"
       },
       {
-        "name": "showAppleGooglePay",
+        "name": "showApplePay",
         "signature": "(options: AppleGoogleOptions) => any",
         "parameters": [
           {
@@ -96,7 +96,7 @@
           "AppleGoogleOptions",
           "DropInResult"
         ],
-        "slug": "showapplegooglepay"
+        "slug": "showapplepay"
       }
     ],
     "properties": []

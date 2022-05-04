@@ -247,7 +247,7 @@ public class BraintreePlugin: CAPPlugin {
         }
     }
     
-    @objc func showAppleGooglePay(_ call: CAPPluginCall) {
+    @objc func showApplePay(_ call: CAPPluginCall) {
         let token = call.getString("token")
         if token == nil, token == "" {
             call.reject("A token is required.")

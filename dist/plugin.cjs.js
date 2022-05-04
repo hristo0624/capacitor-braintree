@@ -21,8 +21,8 @@ class BraintreeWeb extends core.WebPlugin {
     getRecentMethods(options) {
         return this.getRecentMethods(options);
     }
-    showAppleGooglePay(options) {
-        return this.showAppleGooglePay(options);
+    showApplePay(options) {
+        return this.showApplePay(options);
     }
 }
 
