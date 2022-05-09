@@ -167,7 +167,7 @@ public class BraintreePlugin: CAPPlugin {
         address.locality =  call.getString("locality") ?? ""
         address.postalCode =  call.getString("postalCode") ?? ""
         address.countryCodeAlpha2 = call.getString("countryCodeAlpha2") ?? ""
-        threeDSecureRequest.billingAddress = address
+//        threeDSecureRequest.billingAddress = address
 
         let dropInRequest = BTDropInRequest()
         dropInRequest.threeDSecureVerification = true
