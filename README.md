@@ -42,7 +42,12 @@ if url.scheme?.localizedCaseInsensitiveCompare("com.your-company.your-app.paymen
     </intent-filter>
 </activity>
 ```
-3. Require cardinalcommerce editing the application's `build.gradle` adding the following repository:
+3. For the Google Pay, Add this snippet between within the `<application>` tag:
+
+```
+<meta-data android:name="com.google.android.gms.wallet.api.enabled" android:value="true" />
+```
+4. Require cardinalcommerce editing the application's `build.gradle` adding the following repository:
 ```
  allprojects {
     repositories {

@@ -154,7 +154,6 @@ public class BraintreePlugin extends Plugin {
                 }
             }
         });
-        call.resolve();
     }
 
     @PluginMethod()
@@ -206,6 +205,7 @@ public class BraintreePlugin extends Plugin {
                         .build())
                 .billingAddressRequired(true)
                 .googleMerchantId(call.getString("googleMerchantId"));
+        dropInRequest.googlePaymentRequest(googlePaymentRequest);
         Intent intent = dropInRequest.getIntent(getContext());
 
         Log.d(PLUGIN_TAG, "showDropIn started");
