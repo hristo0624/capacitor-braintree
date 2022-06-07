@@ -154,10 +154,11 @@ public class BraintreePlugin extends Plugin {
                 }
             }
         });
+//        call.resolve();
     }
 
     @PluginMethod()
-    public void showDropIn(PluginCall call) throws JSONException {
+    public void showDropIn(PluginCall call) {
         ThreeDSecurePostalAddress address = new ThreeDSecurePostalAddress()
             .givenName(call.getString("givenName")) // ASCII-printable characters required, else will throw a validation error
             .surname(call.getString("surname")) // ASCII-printable characters required, else will throw a validation error
@@ -182,15 +183,15 @@ public class BraintreePlugin extends Plugin {
             .threeDSecureRequest(threeDSecureRequest)
             .vaultManager(true);
 
-        if (call.hasOption("disabled")) {
-            JSArray disables = call.getArray("disabled");
-            if (disables.get(0) == "googlePay") {
-                dropInRequest.disableGooglePayment();
-            }
-            if (disables.get(0) == "card") {
-                dropInRequest.disableCard();
-            }
-        }
+//        if (call.hasOption("disabled")) {
+//            JSArray disables = call.getArray("disabled");
+//            if (disables.get(0) == "googlePay") {
+//                dropInRequest.disableGooglePayment();
+//            }
+//            if (disables.get(0) == "card") {
+//                dropInRequest.disableCard();
+//            }
+//        }
 
         if (call.hasOption("deleteMethods")) {
             dropInRequest.disableGooglePayment();
