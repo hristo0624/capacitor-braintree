@@ -106,6 +106,7 @@ public class BraintreePlugin extends Plugin {
     @PluginMethod()
     public void getRecentMethods(PluginCall call) throws InvalidArgumentException {
         String token = call.getString("token");
+        this.clientToken = token;
 
         if (!call.getData().has("token")){
             call.reject("A token is required.");
@@ -225,8 +226,13 @@ public class BraintreePlugin extends Plugin {
         }
 
         if (activityResult.getResultCode() == Activity.RESULT_CANCELED) {
-            DropInResult result = data.getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
-            call.resolve(handleCanceled(result.getDeviceData()));
+            if (data != null) {
+                DropInResult result = data.getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
+                call.resolve(handleCanceled(result.getDeviceData()));
+            } else {
+                call.resolve(handleCanceled(null));
+            }
+
         }
 
 
