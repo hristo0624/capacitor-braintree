@@ -210,7 +210,7 @@ public class BraintreePlugin: CAPPlugin {
         let dropIn = BTDropInController(authorization: self.token, request: dropInRequest)
         { [self] (controller, result, error) in
             if (error != nil) {
-                call.reject("Something went wrong.")
+                call.reject(error)
             } else if (result?.isCancelled == true) {
                 call.resolve(["cancelled": true])
             } else if let result = result {
