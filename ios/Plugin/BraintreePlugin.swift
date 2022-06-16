@@ -63,7 +63,7 @@ public class BraintreePlugin: CAPPlugin {
             self.dataCollector = BTDataCollector(apiClient: apiClient)
         }
 
-        BTUIKAppearance.sharedInstance().primaryTextColor = UIColor(red: 17.0 / 255.0, green: 182.0 / 255.0, blue: 131.0 / 255.0, alpha: 1.0);
+        BTUIKAppearance.sharedInstance().primaryTextColor = UIColor(red: 34.0 / 255.0, green: 42.0 / 255.0, blue: 57.0 / 255.0, alpha: 1.0);
 
 
         call.resolve()
