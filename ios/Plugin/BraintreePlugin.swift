@@ -12,6 +12,9 @@ public class BraintreePlugin: CAPPlugin {
     var merchantName: String!
     var payAmount: NSDecimalNumber!
     var showCallID: String?
+    var applePaymentMethod: BTPaymentMethodNonce!
+    var applePayError: String!
+    var applePaySuccess: Bool?
 
     /**
      * Get device date
@@ -62,8 +65,11 @@ public class BraintreePlugin: CAPPlugin {
         if let apiClient = BTAPIClient(authorization: self.token) {
             self.dataCollector = BTDataCollector(apiClient: apiClient)
         }
+        
+        // DispatchQueue.main.async { [weak self] in
+            BTUIKAppearance.sharedInstance().primaryTextColor = UIColor(red: 34.0 / 255.0, green: 42.0 / 255.0, blue: 57.0 / 255.0, alpha: 1.0);
+        // }
 
-        BTUIKAppearance.sharedInstance().primaryTextColor = UIColor(red: 34.0 / 255.0, green: 42.0 / 255.0, blue: 57.0 / 255.0, alpha: 1.0);
 
 
         call.resolve()
@@ -171,6 +177,7 @@ public class BraintreePlugin: CAPPlugin {
         address.postalCode =  call.getString("postalCode") ?? ""
         address.countryCodeAlpha2 = call.getString("countryCodeAlpha2") ?? ""
 //        threeDSecureRequest.billingAddress = address
+    
 
         let dropInRequest = BTDropInRequest()
         dropInRequest.threeDSecureVerification = true
@@ -437,18 +444,22 @@ extension BraintreePlugin: PKPaymentAuthorizationViewControllerDelegate {
         print("Apple Pay Did Authorize Payment1" + token)
         guard let apiClient = BTAPIClient(authorization: token) else { return }
         let applePayClient = BTApplePayClient(apiClient: apiClient)
-        
+
         applePayClient.tokenizeApplePay(payment) { (tokenizedPaymentMethod, error) in
-            guard let paymentMethod = tokenizedPaymentMethod, error == nil else {
+            guard let _ = tokenizedPaymentMethod, error == nil else {
                 print(error!.localizedDescription)
-                self.resolveApplePayFail(message: error?.localizedDescription);
+                self.applePayError = error?.localizedDescription;
+                self.applePaySuccess = false;
                 completion(PKPaymentAuthorizationResult(status: .failure, errors: nil))
+//                self.resolveApplePayFail(message: error?.localizedDescription);
                 return
             }
             
 //            self.completionBlock?(paymentMethod)
-            self.resolveApplePaySuccess(paymentMethodNonce: paymentMethod)
+            self.applePaymentMethod = tokenizedPaymentMethod;
+            self.applePaySuccess = true;
             completion(PKPaymentAuthorizationResult(status: .success, errors: nil))
+//            self.resolveApplePaySuccess(paymentMethodNonce: paymentMethod)
         }
     }
     
@@ -462,13 +473,17 @@ extension BraintreePlugin: PKPaymentAuthorizationViewControllerDelegate {
         applePayClient.tokenizeApplePay(payment) { (tokenizedPaymentMethod, error) in
             guard let paymentMethod = tokenizedPaymentMethod, error == nil else {
                 print(error!.localizedDescription)
-                self.resolveApplePayFail(message: error?.localizedDescription);
+//                self.resolveApplePayFail(message: error?.localizedDescription);
+                self.applePayError = error?.localizedDescription;
+                self.applePaySuccess = false;
                 completion(.failure)
                 return
             }
             
 //            self.completionBlock?(paymentMethod)
-            self.resolveApplePaySuccess(paymentMethodNonce: paymentMethod)
+//            self.resolveApplePaySuccess(paymentMethodNonce: paymentMethod)
+            self.applePaymentMethod = tokenizedPaymentMethod;
+            self.applePaySuccess = true;
             completion(.success)
         }
     }
@@ -476,6 +491,11 @@ extension BraintreePlugin: PKPaymentAuthorizationViewControllerDelegate {
     public func paymentAuthorizationViewControllerDidFinish(_ controller: PKPaymentAuthorizationViewController) {
         DispatchQueue.main.async { [weak self] in
             controller.dismiss(animated: true, completion: nil)
+            if (self!.applePaySuccess == true) {
+                self!.resolveApplePaySuccess(paymentMethodNonce: self!.applePaymentMethod);
+            } else {
+                self!.resolveApplePayFail(message: self!.applePayError);
+            }
         }
     }
     
