@@ -358,6 +358,7 @@ public class BraintreePlugin extends Plugin {
             JSObject innerMap = new JSObject();
             innerMap.put("lastTwo", googlePayCardNonce.getLastTwo());
             innerMap.put("email", googlePayCardNonce.getEmail());
+            innerMap.put("network", googlePayCardNonce.getCardType());
             innerMap.put("type", googlePayCardNonce.getTypeLabel());
             innerMap.put("token", googlePayCardNonce.toString());
             innerMap.put("billingAddress", formatAddress(googlePayCardNonce.getBillingAddress()));
