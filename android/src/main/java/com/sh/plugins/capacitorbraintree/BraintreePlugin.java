@@ -298,6 +298,9 @@ public class BraintreePlugin extends Plugin {
             innerMap.put("lastTwo", cardNonce.getLastTwo());
             innerMap.put("network", cardNonce.getCardType());
             innerMap.put("cardHolderName", cardNonce.getCardholderName());
+            innerMap.put("type", cardNonce.getTypeLabel());
+            innerMap.put("token", cardNonce.toString());
+
 
             ThreeDSecureInfo threeDSecureInfo = cardNonce.getThreeDSecureInfo();
 
@@ -309,7 +312,11 @@ public class BraintreePlugin extends Plugin {
 
                 innerMap.put("threeDSecureCard", threeDMap);
             }
-            resultMap.put("card", innerMap);
+            if (resultMap.getString("localizedDescription").equals("Android Pay")) {
+                resultMap.put("googlePay", innerMap);
+            } else {
+                resultMap.put("card", innerMap);
+            }
         }
 
         // PayPal
@@ -351,6 +358,8 @@ public class BraintreePlugin extends Plugin {
             JSObject innerMap = new JSObject();
             innerMap.put("lastTwo", googlePayCardNonce.getLastTwo());
             innerMap.put("email", googlePayCardNonce.getEmail());
+            innerMap.put("type", googlePayCardNonce.getTypeLabel());
+            innerMap.put("token", googlePayCardNonce.toString());
             innerMap.put("billingAddress", formatAddress(googlePayCardNonce.getBillingAddress()));
             innerMap.put("shippingAddress", formatAddress(googlePayCardNonce.getShippingAddress()));
 

@@ -75,6 +75,12 @@ export interface DropInResult {
         email: string;
         billingAddress: PostalAddress;
         shippingAddress: PostalAddress;
+        type?: string;
+        token?: string;
+        lastTwo?: string;
+        network?: string;
+        cardHolderName?: string;
+        threeDSecureCard?: ThreeDSecureCard;
     };
     threeDSecureCard: {
         liabilityShifted: boolean;

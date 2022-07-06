@@ -302,9 +302,10 @@
           "tags": [],
           "docs": "",
           "complexTypes": [
-            "PostalAddress"
+            "PostalAddress",
+            "ThreeDSecureCard"
           ],
-          "type": "{ email: string; billingAddress: PostalAddress; shippingAddress: PostalAddress; }"
+          "type": "{ email: string; billingAddress: PostalAddress; shippingAddress: PostalAddress; type?: string | undefined; token?: string | undefined; lastTwo?: string | undefined; network?: string | undefined; cardHolderName?: string | undefined; threeDSecureCard?: ThreeDSecureCard | undefined; }"
         },
         {
           "name": "threeDSecureCard",
