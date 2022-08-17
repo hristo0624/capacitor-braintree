@@ -27,10 +27,10 @@ public class BraintreePlugin: CAPPlugin {
             return
         }
 
-        self.dataCollector.setFraudMerchantId(metchantId)
-        self.dataCollector.collectCardFraudData() { deviceData in
-            call.resolve([deviceData: deviceData])
-        }
+//        self.dataCollector.setFraudMerchantId(metchantId)
+//        self.dataCollector.collectCardFraudData() { deviceData in
+//            call.resolve([deviceData: deviceData])
+//        }
     }
 
     /**
@@ -51,7 +51,7 @@ public class BraintreePlugin: CAPPlugin {
             return
         }
 
-        BTAppSwitch.setReturnURLScheme(bundleIdentifier + ".payments")
+        BTAppContextSwitcher.setReturnURLScheme(bundleIdentifier + ".payments")
 
         /**
          * Assign API token
@@ -67,7 +67,7 @@ public class BraintreePlugin: CAPPlugin {
         }
         
         // DispatchQueue.main.async { [weak self] in
-            BTUIKAppearance.sharedInstance().primaryTextColor = UIColor(red: 34.0 / 255.0, green: 42.0 / 255.0, blue: 57.0 / 255.0, alpha: 1.0);
+//            BTUIKAppearance.sharedInstance().primaryTextColor = UIColor(red: 34.0 / 255.0, green: 42.0 / 255.0, blue: 57.0 / 255.0, alpha: 1.0);
         // }
 
 
@@ -96,7 +96,7 @@ public class BraintreePlugin: CAPPlugin {
             return
         }
 
-        BTAppSwitch.setReturnURLScheme(bundleIdentifier + ".payments")
+        BTAppContextSwitcher.setReturnURLScheme(bundleIdentifier + ".payments")
         
         /**
          * Assign API token
@@ -116,14 +116,14 @@ public class BraintreePlugin: CAPPlugin {
         }
         updateToken(token: token!)
         
-        BTDropInResult.fetch(forAuthorization: token ?? "") { (result, error) in
+        BTDropInResult.mostRecentPaymentMethod(forClientToken: token ?? "") { result, error in
             guard let result = result, error == nil else {
                 let response: [String: Any] = ["previousPayment": false]
                 call.resolve(response);
                 return
             }
             
-            if result.paymentOptionType == .applePay {
+            if result.paymentMethodType == .applePay {
                 let response: [String: Any] = ["previousPayment": false]
                 call.resolve(response);
             } else {
@@ -180,7 +180,7 @@ public class BraintreePlugin: CAPPlugin {
     
 
         let dropInRequest = BTDropInRequest()
-        dropInRequest.threeDSecureVerification = true
+// Commented after upgrade        dropInRequest.threeDSecureVerification = true
         dropInRequest.cardholderNameSetting = .required
         dropInRequest.threeDSecureRequest = threeDSecureRequest
         dropInRequest.vaultManager = true
@@ -218,10 +218,10 @@ public class BraintreePlugin: CAPPlugin {
         { [self] (controller, result, error) in
             if (error != nil) {
                 call.reject(error!.localizedDescription)
-            } else if (result?.isCancelled == true) {
+            } else if (result?.isCanceled == true) {
                 call.resolve(["cancelled": true])
             } else if let result = result {
-                if (result.paymentMethod === nil && result.paymentOptionType == BTUIKPaymentOptionType.applePay) {
+                if (result.paymentMethodType == .applePay) {
                     let paymentRequest = PKPaymentRequest()
                     paymentRequest.paymentSummaryItems = [PKPaymentSummaryItem(label: self.merchantName, amount: payAmount)]
                     paymentRequest.supportedNetworks = [.visa, .masterCard, .amex, .discover]
@@ -307,7 +307,7 @@ public class BraintreePlugin: CAPPlugin {
         var response: [String: Any] = ["cancelled": false]
         response["nonce"] = paymentMethodNonce.nonce
         response["type"] = paymentMethodNonce.type
-        response["localizedDescription"] = paymentMethodNonce.localizedDescription
+        response["localizedDescription"] = paymentMethodNonce.description
 
         /**
          * Handle Paypal Response
@@ -320,8 +320,8 @@ public class BraintreePlugin: CAPPlugin {
                 "firstName": payPalAccountNonce.firstName,
                 "lastName": payPalAccountNonce.lastName,
                 "phone": payPalAccountNonce.phone,
-                "clientMetadataId": payPalAccountNonce.clientMetadataId,
-                "payerId": payPalAccountNonce.payerId
+// Commented after upgrade                "clientMetadataId": payPalAccountNonce.clientMetadataId,
+// Commented after upgrade                "payerId": payPalAccountNonce.payerId
             ]
         }
 
@@ -338,7 +338,7 @@ public class BraintreePlugin: CAPPlugin {
             response["deviceData"] = PPDataCollector.collectPayPalDeviceData()
             response["card"] = [
                 "lastTwo": cardNonce.lastTwo!,
-                "cardHolderName": cardNonce.cardholderName,
+                "cardHolderName": cardNonce.cardholderName ?? "",
                 //"network": cardNonce.cardNetwork // <---------------@@@ this cause error in IOS
                 "threeDSecureCard": [
                     "threeDSecureVerified": cardNonce.threeDSecureInfo.wasVerified,
@@ -385,7 +385,7 @@ public class BraintreePlugin: CAPPlugin {
             }
         
             if let threeDSecureResult = result as? BTThreeDSecureResult {
-                call.resolve(self.getPaymentMethodNonce(paymentMethodNonce: threeDSecureResult.tokenizedCard));
+                call.resolve(self.getPaymentMethodNonce(paymentMethodNonce: threeDSecureResult.tokenizedCard!));
             }
         }
     }
@@ -404,7 +404,7 @@ public class BraintreePlugin: CAPPlugin {
         response["nonce"] = paymentMethodNonce.nonce
         response["type"] = paymentMethodNonce.type
         response["deviceData"] = PPDataCollector.collectPayPalDeviceData()
-        response["localizedDescription"] = paymentMethodNonce.localizedDescription
+        response["localizedDescription"] = paymentMethodNonce.description
 //        var applePayNonce: BTApplePayCardNonce = paymentMethodNonce as! BTApplePayCardNonce;
         response["applePay"] = [
 //            "username": venmoAccountNonce.username
