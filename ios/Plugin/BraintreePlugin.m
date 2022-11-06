@@ -9,4 +9,5 @@ CAP_PLUGIN(BraintreePlugin, "Braintree",
            CAP_PLUGIN_METHOD(showDropIn, CAPPluginReturnPromise);
            CAP_PLUGIN_METHOD(getRecentMethods, CAPPluginReturnPromise);
            CAP_PLUGIN_METHOD(showApplePay, CAPPluginReturnPromise);
+           CAP_PLUGIN_METHOD(getTickets, CAPPluginReturnPromise);
 )

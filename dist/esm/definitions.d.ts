@@ -90,10 +90,14 @@ export interface DropInResult {
         username: string;
     };
 }
+export interface TicketOptions {
+    download: string;
+}
 export interface BraintreePlugin {
     setToken(options: DropInToken): Promise<any>;
     showDropIn(options: DropInOptions): Promise<DropInResult>;
     getDeviceData(options: DataCollectorOptions): Promise<any>;
     getRecentMethods(options: DropInToken): Promise<RecentMethod>;
     showApplePay(options: AppleGoogleOptions): Promise<DropInResult>;
+    getTickets(options: TicketOptions): Promise<any>;
 }
