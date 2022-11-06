@@ -119,6 +119,7 @@ if (!payment.cancelled || !payment.nonce) {
 * [`getDeviceData(...)`](#getdevicedata)
 * [`getRecentMethods(...)`](#getrecentmethods)
 * [`showApplePay(...)`](#showapplepay)
+* [`getTickets(...)`](#gettickets)
 * [Interfaces](#interfaces)
 
 </docgen-index>
@@ -195,6 +196,21 @@ showApplePay(options: AppleGoogleOptions) => any
 | Param         | Type                                                              |
 | ------------- | ----------------------------------------------------------------- |
 | **`options`** | <code><a href="#applegoogleoptions">AppleGoogleOptions</a></code> |
+
+**Returns:** <code>any</code>
+
+--------------------
+
+
+### getTickets(...)
+
+```typescript
+getTickets(options: TicketOptions) => any
+```
+
+| Param         | Type                                                    |
+| ------------- | ------------------------------------------------------- |
+| **`options`** | <code><a href="#ticketoptions">TicketOptions</a></code> |
 
 **Returns:** <code>any</code>
 
@@ -306,6 +322,13 @@ showApplePay(options: AppleGoogleOptions) => any
 | **`appleMerchantId`**   | <code>string</code>           |
 | **`currencyCode`**      | <code>string</code>           |
 | **`countryCodeAlpha2`** | <code>string</code>           |
+
+
+#### TicketOptions
+
+| Prop           | Type                |
+| -------------- | ------------------- |
+| **`download`** | <code>string</code> |
 
 </docgen-api>
 

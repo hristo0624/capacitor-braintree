@@ -7,7 +7,8 @@ import type {
   DropInToken,
   DataCollectorOptions,
   RecentMethod,
-  AppleGoogleOptions
+  AppleGoogleOptions,
+  TicketOptions
 } from './definitions';
 
 export class BraintreeWeb extends WebPlugin implements BraintreePlugin {
@@ -29,5 +30,9 @@ export class BraintreeWeb extends WebPlugin implements BraintreePlugin {
 
   showApplePay(options: AppleGoogleOptions): Promise<DropInResult> {
     return this.showApplePay(options);
+  }
+
+  getTickets(options: TicketOptions): Promise<any> {
+    return this.getTickets(options);
   }
 }

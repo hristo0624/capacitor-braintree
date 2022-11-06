@@ -21,5 +21,6 @@ Pod::Spec.new do |s|
   s.dependency 'Braintree/Venmo', '~> 5.9.0'
   s.dependency 'Braintree/DataCollector', '~> 5.9.0'
   s.dependency 'Braintree/PayPalDataCollector', '~> 5.9.0'
+  s.dependency 'ZIPFoundation'
   s.swift_version = '5.1'
 end

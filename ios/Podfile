@@ -10,6 +10,7 @@ def capacitor_pods
   pod 'Braintree/Venmo'
   pod 'Braintree/DataCollector'
   pod 'Braintree/PayPalDataCollector'
+  pod 'ZIPFoundation'
   pod 'Capacitor', :path => '../node_modules/@capacitor/ios'
   pod 'CapacitorCordova', :path => '../node_modules/@capacitor/ios'
 end

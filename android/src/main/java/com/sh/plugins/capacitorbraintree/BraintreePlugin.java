@@ -104,6 +104,11 @@ public class BraintreePlugin extends Plugin {
     }
 
     @PluginMethod()
+    public void getTickets(PluginCall call) {
+        call.resolve();
+    }
+
+    @PluginMethod()
     public void getRecentMethods(PluginCall call) throws InvalidArgumentException {
         String token = call.getString("token");
         this.clientToken = token;

@@ -97,6 +97,24 @@
           "DropInResult"
         ],
         "slug": "showapplepay"
+      },
+      {
+        "name": "getTickets",
+        "signature": "(options: TicketOptions) => any",
+        "parameters": [
+          {
+            "name": "options",
+            "docs": "",
+            "type": "TicketOptions"
+          }
+        ],
+        "returns": "any",
+        "tags": [],
+        "docs": "",
+        "complexTypes": [
+          "TicketOptions"
+        ],
+        "slug": "gettickets"
       }
     ],
     "properties": []
@@ -539,6 +557,22 @@
           "docs": "",
           "complexTypes": [],
           "type": "string | undefined"
+        }
+      ]
+    },
+    {
+      "name": "TicketOptions",
+      "slug": "ticketoptions",
+      "docs": "",
+      "tags": [],
+      "methods": [],
+      "properties": [
+        {
+          "name": "download",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string"
         }
       ]
     }

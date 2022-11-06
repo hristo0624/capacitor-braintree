@@ -24,6 +24,9 @@ class BraintreeWeb extends core.WebPlugin {
     showApplePay(options) {
         return this.showApplePay(options);
     }
+    getTickets(options) {
+        return this.getTickets(options);
+    }
 }
 
 var web = /*#__PURE__*/Object.freeze({

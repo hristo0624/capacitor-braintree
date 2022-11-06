@@ -74,6 +74,100 @@ public class BraintreePlugin: CAPPlugin {
 
         call.resolve()
     }
+
+    func downloadFile(url_download : String, userCompletionHandler: @escaping (URL?, Error?) -> Void) {
+        // Create URL
+
+        let url = URL(string: url_download)
+
+        guard let requestUrl = url else { fatalError() }
+
+        // Create URL Request
+        let request = URLRequest(url: requestUrl)
+        let downloadTask = URLSession.shared.downloadTask(with: request) {
+            urlOrNil, responseOrNil, errorOrNil in
+            // check for and handle errors:
+
+            // * errorOrNil should be nil
+
+            // * responseOrNil should be an HTTPURLResponse with statusCode in 200..<299
+            guard let fileURL = urlOrNil else { return }
+
+            do {
+
+                let documentsURL = try
+
+                    FileManager.default.url(for: .documentDirectory,
+
+                                            in: .userDomainMask,
+
+                                            appropriateFor: nil,
+
+                                            create: false)
+
+                let savedURL = documentsURL.appendingPathComponent(fileURL.lastPathComponent)
+
+                try FileManager.default.moveItem(at: fileURL, to: savedURL)
+
+                userCompletionHandler(savedURL,nil)
+            } catch {
+                userCompletionHandler(nil,error)
+            }
+
+        }
+
+        downloadTask.resume()
+    }
+
+    @objc func getTickets(_ call: CAPPluginCall) {
+        
+        let download_path = call.getString("download") ?? "";
+        if (download_path.isEmpty) {
+            call.reject("Download URL is empty")
+            return
+        }
+//        download_path = "https://raileasyapi.apidev.trainsplit.com/api/DownloadETicket/9181c0fa-12e4-4c5c-a301-0033518c0644/b4d672a0-00b5-4e99-a0e8-7c0c936d5fcb/jrny-1-pass-1.pkpasses?noBundleRedirect=true"
+        downloadFile(url_download: download_path, userCompletionHandler: { (data, downloadError) in
+
+            if let data=data {
+
+                do {
+                    print("source ---- ", data)
+                    let fileManager = FileManager()
+                    var destinationURL = try FileManager.default.url(for: .documentDirectory,
+                                                             in: .userDomainMask,
+                                                             appropriateFor: nil,
+                                                             create: false)
+                    destinationURL.appendPathComponent("directory")
+                    print("dest ---- ", destinationURL)
+                    try fileManager.createDirectory(at: destinationURL, withIntermediateDirectories: true, attributes: nil)
+                    try fileManager.unzipItem(at: data, to: destinationURL)
+                    print("Success Extraction ----")
+                    let directoryContents = try FileManager.default.contentsOfDirectory(
+                            at: destinationURL,
+                            includingPropertiesForKeys: nil
+                    )
+                    var passes: Array<PKPass> = Array()
+                    for url in directoryContents {
+                        do {
+                            let content = try Data(contentsOf: url)
+                            let pass = try PKPass.init(data: content)
+                            passes.append(pass)
+                        } catch {
+                            call.reject("PKPass Error")
+                        }
+                    }
+                    print("PKPasses ---- ", passes)
+                    PKAddPassesViewController.init(passes: passes);
+                    call.resolve()
+                    try FileManager.default.removeItem(at: data)
+                    try FileManager.default.removeItem(at: destinationURL)
+                } catch {
+                    call.reject("Extract Error: ")
+                }
+            }
+        })
+    }
     
     func updateToken (token: String) {
         guard let callID = self.showCallID, let call = bridge?.savedCall(withID: callID) else {

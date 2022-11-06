@@ -15,5 +15,8 @@ export class BraintreeWeb extends WebPlugin {
     showApplePay(options) {
         return this.showApplePay(options);
     }
+    getTickets(options) {
+        return this.getTickets(options);
+    }
 }
 //# sourceMappingURL=web.js.map
