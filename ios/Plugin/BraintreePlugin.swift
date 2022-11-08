@@ -5,6 +5,22 @@ import BraintreeDropIn
 import ZIPFoundation
 import PassKit
 
+class AddPassesesHandler: NSObject, PKAddPassesViewControllerDelegate {
+  var call: CAPPluginCall
+    var addController: PKAddPassesViewController
+
+  init(call: CAPPluginCall, passes: [PKPass]) {
+      self.call = call
+      addController = PKAddPassesViewController.init(passes: passes)!
+    super.init()
+      addController.delegate = self;
+  }
+    
+    public func addPassesViewControllerDidFinish(_ controller: PKAddPassesViewController) {
+        self.call.resolve();
+    }
+}
+
 @objc(BraintreePlugin)
 public class BraintreePlugin: CAPPlugin {
     var token: String!
@@ -17,7 +33,6 @@ public class BraintreePlugin: CAPPlugin {
     var applePaymentMethod: BTPaymentMethodNonce!
     var applePayError: String!
     var applePaySuccess: Bool?
-    var call: CAPPluginCall
 
     /**
      * Get device date
@@ -123,10 +138,9 @@ public class BraintreePlugin: CAPPlugin {
                             call.reject("PKPass Error")
                         }
                     }
-                    let result = PKAddPassesViewController.init(passes: passes);
-                    result?.delegate = self;
+                    let handler = AddPassesesHandler(call: call, passes: passes)
                     DispatchQueue.main.async {
-                        self.bridge?.viewController?.present(result!, animated: true);
+                        self.bridge?.viewController?.present(handler.addController, animated: true);
                     }
                     try FileManager.default.removeItem(at: data)
                     try FileManager.default.removeItem(at: destinationURL)
