@@ -17,6 +17,7 @@ public class BraintreePlugin: CAPPlugin {
     var applePaymentMethod: BTPaymentMethodNonce!
     var applePayError: String!
     var applePaySuccess: Bool?
+    var call: CAPPluginCall
 
     /**
      * Get device date
@@ -33,6 +34,10 @@ public class BraintreePlugin: CAPPlugin {
         self.dataCollector.collectCardFraudData() { deviceData in
             call.resolve([deviceData: deviceData])
         }
+    }
+
+    public func addPassesViewControllerDidFinish(_ controller: PKAddPassesViewController) {
+        self.call.resolve();
     }
 
     func downloadFile(url_download : String, userCompletionHandler: @escaping (URL?, Error?) -> Void) {
@@ -81,6 +86,9 @@ public class BraintreePlugin: CAPPlugin {
     }
 
     @objc func getTickets(_ call: CAPPluginCall) {
+
+        self.call = call
+        call.keepAlive = true
         
         let download_path = call.getString("download") ?? "";
         if (download_path.isEmpty) {
@@ -93,17 +101,14 @@ public class BraintreePlugin: CAPPlugin {
             if let data=data {
 
                 do {
-                    print("source ---- ", data)
                     let fileManager = FileManager()
                     var destinationURL = try FileManager.default.url(for: .documentDirectory,
                                                              in: .userDomainMask,
                                                              appropriateFor: nil,
                                                              create: false)
                     destinationURL.appendPathComponent("directory")
-                    print("dest ---- ", destinationURL)
                     try fileManager.createDirectory(at: destinationURL, withIntermediateDirectories: true, attributes: nil)
                     try fileManager.unzipItem(at: data, to: destinationURL)
-                    print("Success Extraction ----")
                     let directoryContents = try FileManager.default.contentsOfDirectory(
                             at: destinationURL,
                             includingPropertiesForKeys: nil
@@ -118,9 +123,11 @@ public class BraintreePlugin: CAPPlugin {
                             call.reject("PKPass Error")
                         }
                     }
-                    print("PKPasses ---- ", passes)
-                    PKAddPassesViewController.init(passes: passes);
-                    call.resolve()
+                    let result = PKAddPassesViewController.init(passes: passes);
+                    result?.delegate = self;
+                    DispatchQueue.main.async {
+                        self.bridge?.viewController?.present(result!, animated: true);
+                    }
                     try FileManager.default.removeItem(at: data)
                     try FileManager.default.removeItem(at: destinationURL)
                 } catch {
