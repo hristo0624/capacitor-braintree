@@ -2,6 +2,8 @@ import Foundation
 import Capacitor
 import Braintree
 import BraintreeDropIn
+import ZIPFoundation
+import PassKit
 
 @objc(BraintreePlugin)
 public class BraintreePlugin: CAPPlugin {
